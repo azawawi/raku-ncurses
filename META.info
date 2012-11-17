@@ -1,0 +1,7 @@
+{
+	"name"        : "NCurses",
+	"version"     : "*",
+	"description" : "Perl 6 interface to NCurses, the text-based interface libary",
+	"depends"     : [ "NativeCall" ],
+	"source-url"  : "git://github.com/azawawi/perl6-ncurses.git"
+}
