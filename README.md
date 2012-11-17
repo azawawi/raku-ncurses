@@ -10,7 +10,7 @@ Installation
 To install libncurses on Debian for example, please use the following command:
 
 ```
-	sudo apt-get install libncurses-dev
+	sudo apt-get install libncurses5
 ```
 
 * Using panda (a module management tool bundled with Rakudo Star):
