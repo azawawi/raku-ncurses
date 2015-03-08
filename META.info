@@ -3,5 +3,8 @@
 	"version"     : "*",
 	"description" : "Perl 6 interface to NCurses, the text-based interface libary",
 	"depends"     : [ ],
+	"provides"    : {
+		"NCurses"	: "lib/NCurses.pm6"
+	},
 	"source-url"  : "git://github.com/azawawi/perl6-ncurses.git"
 }
