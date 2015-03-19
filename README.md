@@ -16,7 +16,7 @@ To install libncurses on Debian for example, please use the following command:
 * Using panda (a module management tool bundled with Rakudo Star):
 
 ```
-    panda install NCurses
+    panda update && panda install NCurses
 ```
 
 * Using ufo (a project Makefile creation script bundled with Rakudo Star) and make:
