@@ -1,5 +1,5 @@
 use v6;
-module NCurses;
+unit module NCurses;
 use NativeCall;
 
 constant LIB = 'libncursesw.so.5';
