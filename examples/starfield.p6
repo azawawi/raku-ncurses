@@ -1,9 +1,12 @@
 #!/usr/bin/env perl6
 
-# example from http://software.gellyfish.co.uk/2015/10/learning-perl-6-from-bad-perl-5-code.html
-
+#
+# Example from
+# http://software.gellyfish.co.uk/2015/10/learning-perl-6-from-bad-perl-5-code.html
+#
 use v6;
 
+use lib 'lib';
 use NCurses;
 
 constant numstars  = 100;
@@ -16,31 +19,34 @@ class Star {
     has Int $.y;
     has Int $.s;
 
-    submethod BUILD() {
+    submethod BUILD {
         $!x = (^screen-x).pick;
         $!y = (^screen-y).pick;
         $!s = (1 .. max-speed).pick;
     }
 
-    method move() {
-        $!x = $!x >= $!s ?? $!x - $!s !! screen-x;
+    method move {
+        $!x = ($!x >= $!s)
+          ?? $!x - $!s
+          !! screen-x;
     }
 }
-
-exit;
 
 my Star @stars = gather { take Star.new for ^numstars };
 
-initscr();
-curs_set(0);
+my $win = initscr;
+die "Failed to initialize ncurses\n" unless $win.defined;
 
-loop {
-    clear();
+curs_set( 0 );
+
+repeat {
+    clear;
     for @stars -> $star {
         $star.move;
-        mvaddstr($star.y, $star.x, '.')
+        mvaddstr( $star.y, $star.x, '.' )
     }
-    nc_refresh();
-    sleep(.05);
-}
-endwin();
+    nc_refresh;
+    sleep( .05 );
+} while getch() < 0;
+
+endwin;
