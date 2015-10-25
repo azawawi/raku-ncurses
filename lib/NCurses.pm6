@@ -2,7 +2,7 @@ use v6;
 unit module NCurses;
 use NativeCall;
 
-constant LIB = 'libncursesw.so.5';
+constant LIB = %*ENV<PERL6_NCURSES_LIB> || 'libncursesw.so.5';
 
 class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
