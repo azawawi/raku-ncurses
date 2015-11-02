@@ -1,5 +1,4 @@
-# NCurses
-[![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
+# NCurses [![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
 
 NCurses provides a Perl 6 interface to libncurses.
 
@@ -51,7 +50,7 @@ library in the system.
 To run tests:
 
 ```
-$ prove -e 'perl6'
+$ prove -e "perl6 -Ilib"
 ```
 
 ## Author
