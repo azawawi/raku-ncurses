@@ -1,3 +1,22 @@
+sudo: required
+
 language: perl6
+
+os:
+  - linux
+  - osx
+
 perl6:
-    - latest
+  - 2016.03
+  - latest
+
+install:
+  - echo $TRAVIS_OS_NAME
+  - rakudobrew build panda
+  - panda installdeps .
+
+before_script:
+  # Install ncurses shared library on Linux/Debian using aptitude
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libncurses5 ; fi
+
+script: prove -v -e "perl6 -Ilib" t/
