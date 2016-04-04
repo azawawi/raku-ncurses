@@ -13,7 +13,7 @@ perl6:
 install:
   - echo $TRAVIS_OS_NAME
   - rakudobrew build panda
-  - panda installdeps .
+  - panda --verbose installdeps .
 
 before_script:
   # Install ncurses shared library on Linux/Debian using aptitude
