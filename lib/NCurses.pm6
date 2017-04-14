@@ -827,6 +827,21 @@ sub getmaxx(WINDOW) returns int32 is native(&library) is export {*};
 
 sub getmaxy(WINDOW) returns int32 is native(&library) is export {*};
 
+sub getbegyx($win, $y is rw, $x is rw) is export {
+    $y = getbegy($win);
+    $x = getbegx($win);
+}
+
+sub getmaxyx($win, $y is rw, $x is rw) is export {
+    $y = getmaxy($win);
+    $x = getmaxx($win);
+}
+
+sub getyx($win, $y is rw, $x is rw) is export {
+    $y = getcury($win);
+    $x = getcurx($win);
+}
+
 sub getparx(WINDOW) returns int32 is native(&library) is export {*};
 
 sub getpary(WINDOW) returns int32 is native(&library) is export {*};
