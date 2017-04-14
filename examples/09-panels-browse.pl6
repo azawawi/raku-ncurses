@@ -104,7 +104,6 @@ while (my $ch = getch) != 27 {
     }
     update_panels;
     doupdate;
-    #wrefresh($_) for @my-wins;
 }
 
 LEAVE {
