@@ -14,11 +14,13 @@ sub create-wins($n) returns Array {
     my $x = 10;
     my @wins;
     for 0..$n - 1 -> $i {
-        $wins[i] = newwin(NLINES, NCOLS, $y, $x);
+        my $win = newwin(NLINES, NCOLS, $y, $x);
         my $label = sprintf("Window Number %d", $i + 1);
-        win_show($wins[i], $label, $i + 1);
+        win-show($win, $label, $i + 1);
         $y += 3;
         $x += 7;
+        wrefresh($win);
+        @wins.push($win);
     }
 
     return @wins;
@@ -38,15 +40,15 @@ sub win-show($win, Str $label, $label_color)
 	getmaxyx($win, $height, $width);
 
 	box($win, 0, 0);
-	mvwaddch($win, 2, 0, ACS_LTEE); 
-	mvwhline($win, 2, 1, ACS_HLINE, $width - 2); 
-	mvwaddch($win, 2, $width - 1, ACS_RTEE); 
+	mvwaddch($win, 2, 0, $acs_map[ACS_LTEE.ord]);
+	mvwhline($win, 2, 1, $acs_map[ACS_HLINE.ord], $width - 2);
+	mvwaddch($win, 2, $width - 1, $acs_map[ACS_RTEE.ord]);
 	
-	print_in_middle($win, 1, 0, $width, $label, COLOR_PAIR($label_color));
+	print_in_middle($win, 1, 0, $width, $label, COLOR_PAIR[$label_color - 1]);
 }
 
 sub print_in_middle($win, $starty, $startx, $width, Str $string, $color) {
-    $win = stdscr unless $win;
+    $win = $stdscr unless $win;
 
     my $x;
     my $y;
@@ -56,22 +58,21 @@ sub print_in_middle($win, $starty, $startx, $width, Str $string, $color) {
     $y     = $starty if $starty != 0;
     $width = 80 if $width == 0;
 
-    $length = $string.chars;
-    $x = $startx + Int($width - $length)/ 2;
+    $x = $startx + Int( ($width - $string.chars) / 2);
     wattron($win, $color);
-    mvwprintw($win, $y, $x, "%s", $string);
+    mvwprintw($win, $y, $x, sprintf("%s", $string));
     wattroff($win, $color);
     nc_refresh;
 }
 
-my PANEL  $top;
+my $top;
 
 # Initialize curses
-initscr or die "Cannot initialize curses window";
+initscr() or die "Cannot initialize curses window";
 start_color;
 cbreak;
 noecho;
-keypad(stdscr, 1);
+keypad($stdscr, 1);
 
 # Initialize all the colors
 init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -83,31 +84,33 @@ my @my-wins = create-wins(3);
 
 # Attach a panel to each window (Order is bottom up)
 my @my_panels;
-new_panel($_) for @my-wins;
+@my_panels.push(new_panel($_)) for @my-wins;
 
 # Set up the user pointers to the next panel
 set_panel_userptr(@my_panels[0], @my_panels[1]);
 set_panel_userptr(@my_panels[1], @my_panels[2]);
 set_panel_userptr(@my_panels[2], @my_panels[0]);
 
-# Update the stacking order. 2nd panel will be on top
-update_panels;
-
 # Show it on the screen
-attron(COLOR_PAIR(4));
-mvprintw(LINES - 2, 0, "Use tab to browse through the windows (F1 to Exit)");
-attroff(COLOR_PAIR(4));
-doupdate();
+attron(COLOR_PAIR[3]);
+mvprintw(0, 0, "Use tab to browse through the windows (F1 to Exit)");
+attroff(COLOR_PAIR[3]);
 
-$top = my_panels[2];
-while (my $ch = getch) != KEY_F(1)
+nc_refresh;
+
+$top = @my_panels[2];
+my $count = 0;
+while (my $ch = getch) != KEY_F1
 {	
     if $ch == 9 {
+        mvprintw(0, 0, "$count");
+        nc_refresh;
+        $count++;
         $top = panel_userptr($top);
         top_panel($top);
     }
     update_panels;
-    doupdate;
+    wrefresh($_) for @my-wins;
 }
 
 LEAVE {

@@ -962,3 +962,9 @@ sub update_panels() is native(&panel-library) is export {*};
 sub show_panel(PANEL) is native(&panel-library) is export {*};
 
 sub hide_panel(PANEL) is native(&panel-library) is export {*};
+
+sub top_panel(PANEL) is native(&panel-library) is export {*};
+
+sub set_panel_userptr(PANEL, Pointer) is native(&panel-library) is export {*};
+
+sub panel_userptr(PANEL) returns Pointer is native(&panel-library) is export {*};
