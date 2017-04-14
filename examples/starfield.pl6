@@ -38,7 +38,7 @@ my $win = initscr;
 die "Failed to initialize ncurses\n" unless $win.defined;
 
 curs_set( 0 );
-
+timeout( 0 );
 repeat {
     clear;
     for @stars -> $star {
