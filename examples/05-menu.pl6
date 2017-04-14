@@ -5,8 +5,8 @@ use v6;
 use lib 'lib';
 use NCurses;
 
-constant WIDTH  = Int(30);
-constant HEIGHT = Int(10);
+constant WIDTH  = 30;
+constant HEIGHT = 10;
 
 my @choices = [ 
     "Choice 1",
