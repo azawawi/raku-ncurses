@@ -37,7 +37,7 @@ sub COLOR_PAIRS is export {
 class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
 
-class MEVENT is repr('CStruct') {
+class MEVENT is repr('CStruct') is export {
     #short id;           /* ID to distinguish multiple devices */
     has int16 $.id;
     #int x, y, z;        /* event coordinates (character-cell) */
@@ -831,7 +831,7 @@ sub getmouse(MEVENT) returns int32 is native(&library) is export {*};
 
 sub ungetmouse(MEVENT) returns int32 is native(&library) is export {*};
 
-sub mousemask(int32,CArray[int32]) returns int32 is native(&library) is export {*};
+sub mousemask(int32,Pointer) returns int32 is native(&library) is export {*};
 
 sub wenclose(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
