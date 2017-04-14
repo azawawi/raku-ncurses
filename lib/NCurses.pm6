@@ -37,6 +37,8 @@ sub COLOR_PAIRS is export {
 class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
 
+our $stdscr is export = cglobal(&library, 'stdscr', WINDOW);
+
 class MEVENT is repr('CStruct') is export {
     #short id;           /* ID to distinguish multiple devices */
     has int16 $.id;
@@ -48,7 +50,7 @@ class MEVENT is repr('CStruct') is export {
     has int32 $.bstate;
 };
 
-
+constant OK is export = 0;
 constant COLOR_BLACK is export = 0;
 constant COLOR_RED is export = 1;
 constant COLOR_GREEN is export = 2;
@@ -831,7 +833,7 @@ sub getmouse(MEVENT) returns int32 is native(&library) is export {*};
 
 sub ungetmouse(MEVENT) returns int32 is native(&library) is export {*};
 
-sub mousemask(int32,Pointer) returns int32 is native(&library) is export {*};
+sub mousemask(int32,int32) returns int32 is native(&library) is export {*};
 
 sub wenclose(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 

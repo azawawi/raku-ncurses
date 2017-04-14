@@ -18,7 +18,6 @@ my @choices = [
 
 my $startx = 0;
 my $starty = 0;
-my $choice = 0;
 my $n_choices = @choices.elems;
 
 sub print_menu($menu_win, $highlight) {
@@ -42,8 +41,8 @@ sub print_menu($menu_win, $highlight) {
 sub report_choice($mouse_x, $mouse_y, $p_choice is rw) {
     my $i = $startx + 2;
     my $j = $starty + 3;
-    for 0..$n_choices - 1 -> $i {
-        if $mouse_y == $j + $choice && $mouse_x >= $i && $mouse_x <= $i + @choices[$choice].chars {
+    for 0..$n_choices - 1 -> $choice {
+        if ($mouse_y == $j + $choice) && ($mouse_x >= $i) && ($mouse_x <= $i + @choices[$choice].chars) {
             if $choice == $n_choices - 1 {
                 $p_choice = -1;
             } else {
@@ -55,47 +54,50 @@ sub report_choice($mouse_x, $mouse_y, $p_choice is rw) {
 }
 
 # Initialize curses
-initscr;
+my $main-win = initscr() or die "Could not initialize ncurses!";
 clear;
 noecho;
 # Line buffering disabled. pass on everything
 cbreak;
 
-# Try to put the window in the middle of screen
-$startx = Int( (80 - WIDTH) / 2 );
-$starty = Int( (24 - HEIGHT) / 2 );
-my MEVENT $event;
+keypad($main-win, 1);
 
 attron(A_REVERSE);
 mvprintw(23, 1, "Click on Exit to quit (Works best in a virtual console)");
-nc_refresh();
+nc_refresh;
 attroff(A_REVERSE);
+
+# Try to put the window in the middle of screen
+$startx = Int( (80 - WIDTH) / 2 );
+$starty = Int( (24 - HEIGHT) / 2 );
 
 # Print the menu for the first time
 my $menu_win = newwin(HEIGHT, WIDTH, $starty, $startx);
 print_menu($menu_win, 1);
 # Get all the mouse events
-mousemask(ALL_MOUSE_EVENTS, 0);
+mousemask(ALL_MOUSE_EVENTS, 0) or die "Failed to set mousemask!";
 
+# Remember to create mouse event
+my MEVENT $event = MEVENT.new;
+
+my $choice = 0;
 while True {
-    my $c = wgetch($menu_win);
-    given $c {
-        when KEY_MOUSE {
-            if getmouse($event) == 1 { # TODO OK {
-                # When the user clicks left mouse button
-                if $event.bstate & BUTTON1_PRESSED {
-                    report_choice($event.x + 1, $event.y + 1, $choice);
-                    if $choice == -1 {
-                        # Exit chosen
-                        exit;
-                    }
-                    mvprintw(22, 1, sprintf("Choice made is : %d String Chosen is \"%10s\"", $choice, @choices[$choice - 1]));
-                    nc_refresh;
+    #my $c = wgetch($menu_win);
+    my $c = getch;
+
+    if $c == KEY_MOUSE {
+        if getmouse($event) == OK {
+            # When the user clicks left mouse button
+            if $event.bstate & BUTTON1_PRESSED {
+                report_choice(Int($event.x) + 1, Int($event.y) + 1, $choice);
+                if $choice == -1 {
+                    # Exit chosen
+                    last;
                 }
+                mvprintw(22, 1, sprintf("Choice made is #%d. User selected \"%s\".", $choice, @choices[$choice - 1]));
             }
-            print_menu($menu_win, $choice);
-            last;
         }
+        print_menu($menu_win, $choice);
     }
 }
 
