@@ -11,7 +11,4 @@ my $win = initscr;
 die "Failed to initialize ncurses\n" unless $win.defined;
 ok $win.defined, "ncurses mode initialized";
 
-printw( "Hello World" );
-nc_refresh;
-
 endwin;
