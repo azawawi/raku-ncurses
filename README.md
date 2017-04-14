@@ -28,21 +28,18 @@ For more examples, please see the [examples](examples) folder.
 ## Installation
 
 * On Debian-based linux distributions, please use the following command:
-
-    ```
+```
 $ sudo apt-get install libncurses5
 ```
 
 * On Mac OS X, please use the following command:
-
-    ```
+```
 $ brew update
 $ brew install ncurses
 ```
 
 * Using zef (a module management tool bundled with Rakudo Star):
-
-    ```
+```
 $ zef install NCurses
 ```
 
