@@ -13,12 +13,12 @@ use lib 'lib';
 use NCurses;
 
 #  Set the dimensions and initial position for our child window
-my Int $width  = 23;
-my Int $height = 7;
-my Int $rows   = 25;
-my Int $cols   = 80;
-my Int $x      = Int(($cols - $width)  / 2);
-my Int $y      = Int(($rows - $height) / 2);
+my $width  = 23;
+my $height = 7;
+my $rows   = 25;
+my $cols   = 80;
+my $x      = Int( ($cols - $width)  / 2 );
+my $y      = Int( ($rows - $height) / 2 );
 
 # Initialize an NCurses main window
 my $main-win = initscr;
