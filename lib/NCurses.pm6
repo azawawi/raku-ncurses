@@ -936,7 +936,7 @@ sub trace(int32) is native(&library) is export {*};
 #
 sub panel-library {
     # Environment variable overrides auto-detection
-    return %*ENV<PERL6_NCURSES_PANELS_LIB> if %*ENV<PERL6_NCURSES_PANELS_LIB>;
+    return %*ENV<PERL6_NCURSES_PANEL_LIB> if %*ENV<PERL6_NCURSES_PANEL_LIB>;
 
     # On MacOS X using howbrew
     return "libpanel.dylib" if $*KERNEL.name eq 'darwin';
@@ -953,7 +953,7 @@ sub panel-library {
     return sprintf("lib%s.so", LIB);
 }
 
-class PANEL  is repr('CPointer') { }
+class PANEL is repr('CPointer') { }
 
 sub new_panel(WINDOW) returns PANEL is native(&panel-library) is export {*};
 
@@ -968,3 +968,35 @@ sub top_panel(PANEL) is native(&panel-library) is export {*};
 sub set_panel_userptr(PANEL, Pointer) is native(&panel-library) is export {*};
 
 sub panel_userptr(PANEL) returns Pointer is native(&panel-library) is export {*};
+
+#
+# Form library API
+#
+sub form-library {
+    # Environment variable overrides auto-detection
+    return %*ENV<PERL6_NCURSES_FORM_LIB> if %*ENV<PERL6_NCURSES_FORM_LIB>;
+
+    # On MacOS X using howbrew
+    return "libform.dylib" if $*KERNEL.name eq 'darwin';
+
+    # Linux/UNIX
+    constant LIB = 'form';
+    if library-exists(LIB, v5) {
+        return sprintf("lib%s.so.5", LIB);
+    } elsif library-exists(LIB, v6) {
+        return sprintf("lib%s.so.6", LIB);
+    }
+
+    # Fallback
+    return sprintf("lib%s.so", LIB);
+}
+
+class FORM is repr('CPointer') { }
+
+sub scale_form(FORM, int32 is rw, int32 is rw) returns int32 is native(&form-library) is export {*}
+
+sub post_form(FORM) returns int32 is native(&form-library) is export {*}
+
+sub unpost_form(FORM) returns int32 is native(&form-library) is export {*}
+
+sub form_driver(FORM, int32) returns int32 is native(&form-library) is export {*}
