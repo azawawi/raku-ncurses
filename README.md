@@ -1,6 +1,6 @@
 # NCurses [![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
 
-NCurses provides a Perl 6 interface to libncurses.
+NCurses provides a Perl 6 interface to `libncurses`.
 
 ## Example
 
@@ -28,29 +28,36 @@ For more examples, please see the [examples](examples) folder.
 ## Installation
 
 * Since NCurses uses libncurses, libncurses.so must be found in /usr/lib.
-To install libncurses on Debian for example, please use the following command:
+To install the ncurses library on Debian-based distributions for example, please use
+the following command:
 
 ```
 $ sudo apt-get install libncurses5
 ```
 
-* Using panda (a module management tool bundled with Rakudo Star):
+* Using zef (a module management tool bundled with Rakudo Star):
 
 ```
-$ panda update && panda install NCurses
+$ zef install NCurses
 ```
 
 ## Environment variables
 
-```PERL6_NCURSES_LIB``` can now be used to specify the location of the ncurses
+`PERL6_NCURSES_LIB` can now be used to specify the location of the ncurses
 library in the system.
 
 ## Testing
 
-To run tests:
-
+- To run tests:
 ```
-$ prove -e "perl6 -Ilib"
+$ prove -ve "perl6 -Ilib"
+```
+
+- To run all tests including author tests (Please make sure
+[Test::Meta](https://github.com/jonathanstowe/Test-META) is installed):
+```
+$ zef install Test::META
+$ AUTHOR_TESTING=1 prove -e "perl6 -Ilib"
 ```
 
 ## Author
@@ -59,4 +66,4 @@ Ahmad M. Zawawi, azawawi on #perl6, https://github.com/azawawi/
 
 ## License
 
-Artistic License 2.0
+MIT License
