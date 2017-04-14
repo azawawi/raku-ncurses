@@ -38,6 +38,7 @@ class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
 
 our $stdscr is export = cglobal(&library, 'stdscr', WINDOW);
+our $acs_map is export = cglobal(&library, 'acs_map', CArray[int64]);
 
 class MEVENT is repr('CStruct') is export {
     #short id;           /* ID to distinguish multiple devices */
@@ -50,7 +51,9 @@ class MEVENT is repr('CStruct') is export {
     has int32 $.bstate;
 };
 
-constant OK is export = 0;
+constant ERR is export = -1;
+constant OK  is export  = 0;
+
 constant COLOR_BLACK is export = 0;
 constant COLOR_RED is export = 1;
 constant COLOR_GREEN is export = 2;
@@ -218,6 +221,70 @@ constant BUTTON_ALT is export = 67108864;
 constant REPORT_MOUSE_POSITION is export = 134217728;
 constant ALL_MOUSE_EVENTS is export = 134217727;
 
+#
+# Line graphics constants
+# Note: ACS is Alternative Character Set
+#
+
+# VT100 symbols begin here
+constant ACS_ULCORNER is export = 'l'; #  upper left corner
+constant ACS_LLCORNER is export = 'm'; #  lower left corner
+constant ACS_URCORNER is export  = 'k'; #  upper right corner
+constant ACS_LRCORNER is export  = 'j'; #  lower right corner
+constant ACS_LTEE is export  = 't'; #  tee pointing right
+constant ACS_RTEE is export  = 'u'; #  tee pointing left
+constant ACS_BTEE is export  = 'v'; #  tee pointing up
+constant ACS_TTEE is export  = 'w'; #  tee pointing down
+constant ACS_HLINE is export = 'q'; #  horizontal line
+constant ACS_VLINE is export = 'x'; #  vertical line
+constant ACS_PLUS is export = 'n'; #  large plus or crossover
+constant ACS_S1 is export = 'o'; #  scan line 1
+constant ACS_S9 is export = 's'; #  scan line 9
+constant ACS_DIAMOND is export = '`'; #  diamond
+constant ACS_CKBOARD is export = 'a'; #  checker board (stipple)
+constant ACS_DEGREE is export = 'f'; #  degree symbol
+constant ACS_PLMINUS is export = 'g'; #  plus/minus
+constant ACS_BULLET is export = '~'; #  bullet
+
+# Teletype 5410v1 symbols begin here
+constant ACS_LARROW is export = ','; #  arrow pointing left
+constant ACS_RARROW is export = '+'; #  arrow pointing right
+constant ACS_DARROW is export = '.'; #  arrow pointing down
+constant ACS_UARROW is export = '-'; #  arrow pointing up
+constant ACS_BOARD is export = 'h'; #  board of squares
+constant ACS_LANTERN is export = 'i'; #  lantern symbol
+constant ACS_BLOCK is export = '0'; #  solid square block
+
+#
+# These aren't documented, but a lot of System Vs have them anyway
+# (you can spot pprryyzz{{||}} in a lot of AT&T terminfo strings).
+# The ACS_names may not match AT&T's, our source didn't know them.
+#
+constant ACS_S3 is export = 'p'; #  scan line 3
+constant ACS_S7 is export = 'r'; #  scan line 7
+constant ACS_LEQUAL is export = 'y'; #  less/equal
+constant ACS_GEQUAL is export = 'z'; #  greater/equal
+constant ACS_PI is export = '{'; #  Pi
+constant ACS_NEQUAL is export = '|'; #  not equal
+constant ACS_STERLING is export = '}'; #  UK pound sign
+
+#
+# Line drawing ACS names are of the form ACS_trbl, where t is the top, r
+# is the right, b is the bottom, and l is the left.  t, r, b, and l might
+# be B (blank), S (single), D (double), or T (thick).  The subset defined
+# here only uses B and S.
+#
+constant ACS_BSSB is export = ACS_ULCORNER;
+constant ACS_SSBB is export = ACS_LLCORNER;
+constant ACS_BBSS is export = ACS_URCORNER;
+constant ACS_SBBS is export = ACS_LRCORNER;
+constant ACS_SBSS is export = ACS_RTEE;
+constant ACS_SSSB is export = ACS_LTEE;
+constant ACS_SSBS is export = ACS_BTEE;
+constant ACS_BSSS is export = ACS_TTEE;
+constant ACS_BSBS is export = ACS_HLINE;
+constant ACS_SBSB is export = ACS_VLINE;
+constant ACS_SSSS is export = ACS_PLUS;
 
 constant COLOR_PAIR   is export = (COLOR_PAIR_1,COLOR_PAIR_2,COLOR_PAIR_3,COLOR_PAIR_4,COLOR_PAIR_5,COLOR_PAIR_6,COLOR_PAIR_7);
 
