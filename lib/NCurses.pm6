@@ -429,6 +429,10 @@ sub mvinsnstr(int32,int32,Str,int32) returns int32 is native(&library) is export
 
 sub mvinsstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
+sub mvprintw(int32, int32, Str) returns int32 is native(&library) is export {*};
+
+sub mvwprintw(WINDOW, int32, int32, Str) returns int32 is native(&library) is export {*};
+
 sub mvinstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
 sub mvvline(int32,int32,int32,int32) returns int32 is native(&library) is export {*};
