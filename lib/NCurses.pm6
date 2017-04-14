@@ -5,22 +5,22 @@ use LibraryCheck;
 use NativeCall;
 
 sub library is export {
-  # Environment variable overrides auto-detection
-  return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
+    # Environment variable overrides auto-detection
+    return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
 
-  # On MacOS X using howbrew
-  return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
+    # On MacOS X using howbrew
+    return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
 
-  # Linux/UNIX
-  constant LIB = 'ncursesw';
-  if library-exists(LIB, v5) {
-    return sprintf("lib%s.so.5", LIB);
-  } elsif library-exists(LIB, v6) {
-    return sprintf("lib%s.so.6", LIB);
-  }
+    # Linux/UNIX
+    constant LIB = 'ncursesw';
+    if library-exists(LIB, v5) {
+        return sprintf("lib%s.so.5", LIB);
+    } elsif library-exists(LIB, v6) {
+        return sprintf("lib%s.so.6", LIB);
+    }
 
-  # Fallback
-  return sprintf("lib%s.so", LIB);
+    # Fallback
+    return sprintf("lib%s.so", LIB);
 }
 
 
@@ -38,14 +38,14 @@ class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
 
 class MEVENT is repr('CStruct') {
-  #short id;           /* ID to distinguish multiple devices */
-  has int16 $.id;
-  #int x, y, z;        /* event coordinates (character-cell) */
-  has int32 $.x;
-  has int32 $.y;
-  has int32 $.z;
-  #mmask_t bstate;     /* button state bits */
-  has int32 $.bstate;
+    #short id;           /* ID to distinguish multiple devices */
+    has int16 $.id;
+    #int x, y, z;        /* event coordinates (character-cell) */
+    has int32 $.x;
+    has int32 $.y;
+    has int32 $.z;
+    #mmask_t bstate;     /* button state bits */
+    has int32 $.bstate;
 };
 
 
