@@ -19,8 +19,11 @@ nc_refresh;
 # Wait for a keypress
 while getch() < 0 { };
 
-# End curses mode
-endwin;
+# Cleanup
+LEAVE {
+    delwin($win) if $win;
+    endwin;
+}
 ```
 
 For more examples, please see the [examples](examples) folder.
