@@ -4,7 +4,7 @@ unit module NCurses;
 use LibraryCheck;
 use NativeCall;
 
-sub library is export {
+sub library {
     # Environment variable overrides auto-detection
     return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
 
@@ -22,7 +22,6 @@ sub library is export {
     # Fallback
     return sprintf("lib%s.so", LIB);
 }
-
 
 # Workaround since you need late binding of COLOR_PAIRS after initscr is called
 # for the first time
@@ -915,3 +914,32 @@ sub mcprint(Str,int32) returns int32 is native(&library) is export {*};
 sub has_key(int32) returns int32 is native(&library) is export {*};
 
 sub trace(int32) is native(&library) is export {*};
+
+
+#
+# Panel library API
+#
+sub panel-library {
+    # Environment variable overrides auto-detection
+    return %*ENV<PERL6_NCURSES_PANELS_LIB> if %*ENV<PERL6_NCURSES_PANELS_LIB>;
+
+    # On MacOS X using howbrew
+    return "libpanel.dylib" if $*KERNEL.name eq 'darwin';
+
+    # Linux/UNIX
+    constant LIB = 'panel';
+    if library-exists(LIB, v5) {
+        return sprintf("lib%s.so.5", LIB);
+    } elsif library-exists(LIB, v6) {
+        return sprintf("lib%s.so.6", LIB);
+    }
+
+    # Fallback
+    return sprintf("lib%s.so", LIB);
+}
+
+class PANEL  is repr('CPointer') { }
+
+sub new_panel(WINDOW) returns PANEL is native(&panel-library) is export {*};
+
+sub update_panels() is native(&panel-library) is export {*};
