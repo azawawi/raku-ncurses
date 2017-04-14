@@ -1,6 +1,6 @@
 # NCurses [![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
 
-NCurses provides a Perl 6 interface to `libncurses`.
+NCurses provides a Perl 6 native interface to `ncurses` library.
 
 ## Example
 
@@ -27,23 +27,28 @@ For more examples, please see the [examples](examples) folder.
 
 ## Installation
 
-* Since NCurses uses libncurses, libncurses.so must be found in /usr/lib.
-To install the ncurses library on Debian-based distributions for example, please use
-the following command:
+* On Debian-based linux distributions, please use the following command:
 
-```
+    ```
 $ sudo apt-get install libncurses5
+```
+
+* On Mac OS X, please use the following command:
+
+    ```
+$ brew update
+$ brew install ncurses
 ```
 
 * Using zef (a module management tool bundled with Rakudo Star):
 
-```
+    ```
 $ zef install NCurses
 ```
 
 ## Environment variables
 
-`PERL6_NCURSES_LIB` can now be used to specify the location of the ncurses
+`PERL6_NCURSES_LIB` can now be used to specify the location of the `ncurses`
 library in the system.
 
 ## Testing
