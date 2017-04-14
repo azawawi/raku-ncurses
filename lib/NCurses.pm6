@@ -1,8 +1,28 @@
 use v6;
 unit module NCurses;
+
+use LibraryCheck;
 use NativeCall;
 
-constant LIB = %*ENV<PERL6_NCURSES_LIB> || 'libncursesw.so.5';
+sub library is export {
+  # Environment variable overrides auto-detection
+  return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>.defined;
+
+  # On MacOS X using howbrew
+  return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
+
+  # Linux/UNIX
+  constant LIB = 'ncursesw';
+  if library-exists(LIB, v5) {
+    return sprintf("lib%s.so.5", LIB);
+  } elsif library-exists(LIB, v6) {
+    return sprintf("lib%s.so.6", LIB);
+  }
+
+  # Fallback
+  return sprintf("lib%s.so", LIB);
+}
+
 
 class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
@@ -191,399 +211,399 @@ constant COLOR_PAIR   is export = (COLOR_PAIR_1,COLOR_PAIR_2,COLOR_PAIR_3,COLOR_
 
 # functions from curses.h below
 
-sub addch(int32) returns int32 is native(LIB) is export {*};
+sub addch(int32) returns int32 is native(&library) is export {*};
 
-sub addchnstr(CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub addchnstr(CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub addchstr(CArray[int32]) returns int32 is native(LIB) is export {*};
+sub addchstr(CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub addnstr(Str,int32) returns int32 is native(LIB) is export {*};
+sub addnstr(Str,int32) returns int32 is native(&library) is export {*};
 
-sub addstr(Str) returns int32 is native(LIB) is export {*};
+sub addstr(Str) returns int32 is native(&library) is export {*};
 
-sub attroff(int32) returns int32 is native(LIB) is export {*};
+sub attroff(int32) returns int32 is native(&library) is export {*};
 
-sub attron(int32) returns int32 is native(LIB) is export {*};
+sub attron(int32) returns int32 is native(&library) is export {*};
 
-sub attrset(int32) returns int32 is native(LIB) is export {*};
+sub attrset(int32) returns int32 is native(&library) is export {*};
 
-sub attr_get(CArray[int32],CArray[int16],int32) returns int32 is native(LIB) is export {*};
+sub attr_get(CArray[int32],CArray[int16],int32) returns int32 is native(&library) is export {*};
 
-sub attr_off(int32,int32) returns int32 is native(LIB) is export {*};
+sub attr_off(int32,int32) returns int32 is native(&library) is export {*};
 
-sub attr_on(int32,int32) returns int32 is native(LIB) is export {*};
+sub attr_on(int32,int32) returns int32 is native(&library) is export {*};
 
-sub attr_set(int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub attr_set(int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub baudrate() returns int32 is native(LIB) is export {*};
+sub baudrate() returns int32 is native(&library) is export {*};
 
-sub beep() returns int32 is native(LIB) is export {*};
+sub beep() returns int32 is native(&library) is export {*};
 
-sub bkgd(int32) returns int32 is native(LIB) is export {*};
+sub bkgd(int32) returns int32 is native(&library) is export {*};
 
-sub bkgdset(int32) is native(LIB) is export {*};
+sub bkgdset(int32) is native(&library) is export {*};
 
-sub border(int32,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub border(int32,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub box(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub box(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub can_change_color() returns int32 is native(LIB) is export {*};
+sub can_change_color() returns int32 is native(&library) is export {*};
 
-sub cbreak() returns int32 is native(LIB) is export {*};
+sub cbreak() returns int32 is native(&library) is export {*};
 
-sub chgat(int32,int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub chgat(int32,int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub clear() returns int32 is native(LIB) is export {*};
+sub clear() returns int32 is native(&library) is export {*};
 
-sub clearok(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub clearok(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub clrtobot() returns int32 is native(LIB) is export {*};
+sub clrtobot() returns int32 is native(&library) is export {*};
 
-sub clrtoeol() returns int32 is native(LIB) is export {*};
+sub clrtoeol() returns int32 is native(&library) is export {*};
 
-sub color_content(int16,CArray[int16],CArray[int16],CArray[int16]) returns int32 is native(LIB) is export {*};
+sub color_content(int16,CArray[int16],CArray[int16],CArray[int16]) returns int32 is native(&library) is export {*};
 
-sub color_set(int16,int32) returns int32 is native(LIB) is export {*};
+sub color_set(int16,int32) returns int32 is native(&library) is export {*};
 
-sub copywin(WINDOW,WINDOW,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub copywin(WINDOW,WINDOW,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub curs_set(int32) returns int32 is native(LIB) is export {*};
+sub curs_set(int32) returns int32 is native(&library) is export {*};
 
-sub def_prog_mode() returns int32 is native(LIB) is export {*};
+sub def_prog_mode() returns int32 is native(&library) is export {*};
 
-sub def_shell_mode() returns int32 is native(LIB) is export {*};
+sub def_shell_mode() returns int32 is native(&library) is export {*};
 
-sub delay_output(int32) returns int32 is native(LIB) is export {*};
+sub delay_output(int32) returns int32 is native(&library) is export {*};
 
-sub delch() returns int32 is native(LIB) is export {*};
+sub delch() returns int32 is native(&library) is export {*};
 
-sub delscreen(SCREEN) is native(LIB) is export {*};
+sub delscreen(SCREEN) is native(&library) is export {*};
 
-sub delwin(WINDOW) returns int32 is native(LIB) is export {*};
+sub delwin(WINDOW) returns int32 is native(&library) is export {*};
 
-sub deleteln() returns int32 is native(LIB) is export {*};
+sub deleteln() returns int32 is native(&library) is export {*};
 
-sub derwin(WINDOW,int32,int32,int32,int32) returns WINDOW is native(LIB) is export {*};
+sub derwin(WINDOW,int32,int32,int32,int32) returns WINDOW is native(&library) is export {*};
 
-sub doupdate() returns int32 is native(LIB) is export {*};
+sub doupdate() returns int32 is native(&library) is export {*};
 
-sub dupwin(WINDOW) returns WINDOW is native(LIB) is export {*};
+sub dupwin(WINDOW) returns WINDOW is native(&library) is export {*};
 
-sub echo() returns int32 is native(LIB) is export {*};
+sub echo() returns int32 is native(&library) is export {*};
 
-sub echochar(int32) returns int32 is native(LIB) is export {*};
+sub echochar(int32) returns int32 is native(&library) is export {*};
 
-sub erase() returns int32 is native(LIB) is export {*};
+sub erase() returns int32 is native(&library) is export {*};
 
-sub endwin() returns int32 is native(LIB) is export {*};
+sub endwin() returns int32 is native(&library) is export {*};
 
-sub erasechar() returns int8 is native(LIB) is export {*};
+sub erasechar() returns int8 is native(&library) is export {*};
 
-sub filter() is native(LIB) is export {*};
+sub filter() is native(&library) is export {*};
 
-sub flash() returns int32 is native(LIB) is export {*};
+sub flash() returns int32 is native(&library) is export {*};
 
-sub flushinp() returns int32 is native(LIB) is export {*};
+sub flushinp() returns int32 is native(&library) is export {*};
 
-sub getbkgd(WINDOW) returns int32 is native(LIB) is export {*};
+sub getbkgd(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getch() returns int32 is native(LIB) is export {*};
+sub getch() returns int32 is native(&library) is export {*};
 
-sub getnstr(Str,int32) returns int32 is native(LIB) is export {*};
+sub getnstr(Str,int32) returns int32 is native(&library) is export {*};
 
-sub getstr(Str) returns int32 is native(LIB) is export {*};
+sub getstr(Str) returns int32 is native(&library) is export {*};
 
 # unknown type in: WINDOW * getwin(FILE *)
 
-sub halfdelay(int32) returns int32 is native(LIB) is export {*};
+sub halfdelay(int32) returns int32 is native(&library) is export {*};
 
-sub has_colors() returns int32 is native(LIB) is export {*};
+sub has_colors() returns int32 is native(&library) is export {*};
 
-sub has_ic() returns int32 is native(LIB) is export {*};
+sub has_ic() returns int32 is native(&library) is export {*};
 
-sub has_il() returns int32 is native(LIB) is export {*};
+sub has_il() returns int32 is native(&library) is export {*};
 
-sub hline(int32,int32) returns int32 is native(LIB) is export {*};
+sub hline(int32,int32) returns int32 is native(&library) is export {*};
 
-sub idcok(WINDOW,int32) is native(LIB) is export {*};
+sub idcok(WINDOW,int32) is native(&library) is export {*};
 
-sub idlok(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub idlok(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub immedok(WINDOW,int32) is native(LIB) is export {*};
+sub immedok(WINDOW,int32) is native(&library) is export {*};
 
-sub inch() returns int32 is native(LIB) is export {*};
+sub inch() returns int32 is native(&library) is export {*};
 
-sub inchnstr(CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub inchnstr(CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub inchstr(CArray[int32]) returns int32 is native(LIB) is export {*};
+sub inchstr(CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub initscr() returns WINDOW is native(LIB) is export {*};
+sub initscr() returns WINDOW is native(&library) is export {*};
 
-sub init_color(int16,int16,int16,int16) returns int32 is native(LIB) is export {*};
+sub init_color(int16,int16,int16,int16) returns int32 is native(&library) is export {*};
 
-sub init_pair(int16,int16,int16) returns int32 is native(LIB) is export {*};
+sub init_pair(int16,int16,int16) returns int32 is native(&library) is export {*};
 
-sub innstr(Str,int32) returns int32 is native(LIB) is export {*};
+sub innstr(Str,int32) returns int32 is native(&library) is export {*};
 
-sub insch(int32) returns int32 is native(LIB) is export {*};
+sub insch(int32) returns int32 is native(&library) is export {*};
 
-sub insdelln(int32) returns int32 is native(LIB) is export {*};
+sub insdelln(int32) returns int32 is native(&library) is export {*};
 
-sub insertln() returns int32 is native(LIB) is export {*};
+sub insertln() returns int32 is native(&library) is export {*};
 
-sub insnstr(Str,int32) returns int32 is native(LIB) is export {*};
+sub insnstr(Str,int32) returns int32 is native(&library) is export {*};
 
-sub insstr(Str) returns int32 is native(LIB) is export {*};
+sub insstr(Str) returns int32 is native(&library) is export {*};
 
-sub instr(Str) returns int32 is native(LIB) is export {*};
+sub instr(Str) returns int32 is native(&library) is export {*};
 
-sub intrflush(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub intrflush(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub isendwin() returns int32 is native(LIB) is export {*};
+sub isendwin() returns int32 is native(&library) is export {*};
 
-sub is_linetouched(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub is_linetouched(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub is_wintouched(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_wintouched(WINDOW) returns int32 is native(&library) is export {*};
 
-sub keyname(int32) returns Str is native(LIB) is export {*};
+sub keyname(int32) returns Str is native(&library) is export {*};
 
-sub keypad(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub keypad(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub killchar() returns int8 is native(LIB) is export {*};
+sub killchar() returns int8 is native(&library) is export {*};
 
-sub leaveok(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub leaveok(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub longname() returns Str is native(LIB) is export {*};
+sub longname() returns Str is native(&library) is export {*};
 
-sub meta(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub meta(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub move(int32,int32) returns int32 is native(LIB) is export {*};
+sub move(int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvaddch(int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvaddch(int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvaddchnstr(int32,int32,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub mvaddchnstr(int32,int32,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mvaddchstr(int32,int32,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub mvaddchstr(int32,int32,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub mvaddnstr(int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvaddnstr(int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvaddstr(int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvaddstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvchgat(int32,int32,int32,int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub mvchgat(int32,int32,int32,int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub mvcur(int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvcur(int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvdelch(int32,int32) returns int32 is native(LIB) is export {*};
+sub mvdelch(int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvderwin(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvderwin(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvgetch(int32,int32) returns int32 is native(LIB) is export {*};
+sub mvgetch(int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvgetnstr(int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvgetnstr(int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvgetstr(int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvgetstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvhline(int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvhline(int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvinch(int32,int32) returns int32 is native(LIB) is export {*};
+sub mvinch(int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvinchnstr(int32,int32,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub mvinchnstr(int32,int32,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mvinchstr(int32,int32,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub mvinchstr(int32,int32,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub mvinnstr(int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvinnstr(int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvinsch(int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvinsch(int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvinsnstr(int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvinsnstr(int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvinsstr(int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvinsstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvinstr(int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvinstr(int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvvline(int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvvline(int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwaddch(WINDOW,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwaddch(WINDOW,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwaddchnstr(WINDOW,int32,int32,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub mvwaddchnstr(WINDOW,int32,int32,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mvwaddchstr(WINDOW,int32,int32,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub mvwaddchstr(WINDOW,int32,int32,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub mvwaddnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvwaddnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvwaddstr(WINDOW,int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvwaddstr(WINDOW,int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvwchgat(WINDOW,int32,int32,int32,int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub mvwchgat(WINDOW,int32,int32,int32,int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub mvwdelch(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwdelch(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwgetch(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwgetch(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwgetnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvwgetnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvwgetstr(WINDOW,int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvwgetstr(WINDOW,int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvwhline(WINDOW,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwhline(WINDOW,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwin(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwin(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwinch(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwinch(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwinchnstr(WINDOW,int32,int32,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub mvwinchnstr(WINDOW,int32,int32,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mvwinchstr(WINDOW,int32,int32,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub mvwinchstr(WINDOW,int32,int32,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub mvwinnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvwinnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvwinsch(WINDOW,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwinsch(WINDOW,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mvwinsnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub mvwinsnstr(WINDOW,int32,int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub mvwinsstr(WINDOW,int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvwinsstr(WINDOW,int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvwinstr(WINDOW,int32,int32,Str) returns int32 is native(LIB) is export {*};
+sub mvwinstr(WINDOW,int32,int32,Str) returns int32 is native(&library) is export {*};
 
-sub mvwvline(WINDOW,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub mvwvline(WINDOW,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub napms(int32) returns int32 is native(LIB) is export {*};
+sub napms(int32) returns int32 is native(&library) is export {*};
 
-sub newpad(int32,int32) returns WINDOW is native(LIB) is export {*};
+sub newpad(int32,int32) returns WINDOW is native(&library) is export {*};
 
 # unknown type in: SCREEN * newterm(const char *,FILE *,FILE *)
 
-sub newwin(int32,int32,int32,int32) returns WINDOW is native(LIB) is export {*};
+sub newwin(int32,int32,int32,int32) returns WINDOW is native(&library) is export {*};
 
-sub nl() returns int32 is native(LIB) is export {*};
+sub nl() returns int32 is native(&library) is export {*};
 
-sub nocbreak() returns int32 is native(LIB) is export {*};
+sub nocbreak() returns int32 is native(&library) is export {*};
 
-sub nodelay(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub nodelay(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub noecho() returns int32 is native(LIB) is export {*};
+sub noecho() returns int32 is native(&library) is export {*};
 
-sub nonl() returns int32 is native(LIB) is export {*};
+sub nonl() returns int32 is native(&library) is export {*};
 
-sub noqiflush() is native(LIB) is export {*};
+sub noqiflush() is native(&library) is export {*};
 
-sub noraw() returns int32 is native(LIB) is export {*};
+sub noraw() returns int32 is native(&library) is export {*};
 
-sub notimeout(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub notimeout(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub overlay(WINDOW,WINDOW) returns int32 is native(LIB) is export {*};
+sub overlay(WINDOW,WINDOW) returns int32 is native(&library) is export {*};
 
-sub overwrite(WINDOW,WINDOW) returns int32 is native(LIB) is export {*};
+sub overwrite(WINDOW,WINDOW) returns int32 is native(&library) is export {*};
 
-sub pair_content(int16,CArray[int16],CArray[int16]) returns int32 is native(LIB) is export {*};
+sub pair_content(int16,CArray[int16],CArray[int16]) returns int32 is native(&library) is export {*};
 
-sub pechochar(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub pechochar(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub pnoutrefresh(WINDOW,int32,int32,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub pnoutrefresh(WINDOW,int32,int32,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub prefresh(WINDOW,int32,int32,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub prefresh(WINDOW,int32,int32,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
 # unknown type in: int putwin(WINDOW *, FILE *)
 
-sub qiflush() is native(LIB) is export {*};
+sub qiflush() is native(&library) is export {*};
 
-sub raw() returns int32 is native(LIB) is export {*};
+sub raw() returns int32 is native(&library) is export {*};
 
-sub redrawwin(WINDOW) returns int32 is native(LIB) is export {*};
+sub redrawwin(WINDOW) returns int32 is native(&library) is export {*};
 
-sub nc_refresh() is symbol('refresh') returns int32 is native(LIB) is export {*};
+sub nc_refresh() is symbol('refresh') returns int32 is native(&library) is export {*};
 
-sub resetty() returns int32 is native(LIB) is export {*};
+sub resetty() returns int32 is native(&library) is export {*};
 
-sub reset_prog_mode() returns int32 is native(LIB) is export {*};
+sub reset_prog_mode() returns int32 is native(&library) is export {*};
 
-sub reset_shell_mode() returns int32 is native(LIB) is export {*};
+sub reset_shell_mode() returns int32 is native(&library) is export {*};
 
-sub savetty() returns int32 is native(LIB) is export {*};
+sub savetty() returns int32 is native(&library) is export {*};
 
-sub scr_dump(Str) returns int32 is native(LIB) is export {*};
+sub scr_dump(Str) returns int32 is native(&library) is export {*};
 
-sub scr_init(Str) returns int32 is native(LIB) is export {*};
+sub scr_init(Str) returns int32 is native(&library) is export {*};
 
-sub scrl(int32) returns int32 is native(LIB) is export {*};
+sub scrl(int32) returns int32 is native(&library) is export {*};
 
-sub scroll(WINDOW) returns int32 is native(LIB) is export {*};
+sub scroll(WINDOW) returns int32 is native(&library) is export {*};
 
-sub scrollok(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub scrollok(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub scr_restore(Str) returns int32 is native(LIB) is export {*};
+sub scr_restore(Str) returns int32 is native(&library) is export {*};
 
-sub scr_set(Str) returns int32 is native(LIB) is export {*};
+sub scr_set(Str) returns int32 is native(&library) is export {*};
 
-sub setscrreg(int32,int32) returns int32 is native(LIB) is export {*};
+sub setscrreg(int32,int32) returns int32 is native(&library) is export {*};
 
-sub set_term(SCREEN) returns SCREEN is native(LIB) is export {*};
+sub set_term(SCREEN) returns SCREEN is native(&library) is export {*};
 
-sub slk_attroff(int32) returns int32 is native(LIB) is export {*};
+sub slk_attroff(int32) returns int32 is native(&library) is export {*};
 
-sub slk_attr_off(int32,int32) returns int32 is native(LIB) is export {*};
+sub slk_attr_off(int32,int32) returns int32 is native(&library) is export {*};
 
-sub slk_attron(int32) returns int32 is native(LIB) is export {*};
+sub slk_attron(int32) returns int32 is native(&library) is export {*};
 
-sub slk_attr_on(int32,int32) returns int32 is native(LIB) is export {*};
+sub slk_attr_on(int32,int32) returns int32 is native(&library) is export {*};
 
-sub slk_attrset(int32) returns int32 is native(LIB) is export {*};
+sub slk_attrset(int32) returns int32 is native(&library) is export {*};
 
-sub slk_attr() returns int32 is native(LIB) is export {*};
+sub slk_attr() returns int32 is native(&library) is export {*};
 
-sub slk_attr_set(int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub slk_attr_set(int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub slk_clear() returns int32 is native(LIB) is export {*};
+sub slk_clear() returns int32 is native(&library) is export {*};
 
-sub slk_color(int16) returns int32 is native(LIB) is export {*};
+sub slk_color(int16) returns int32 is native(&library) is export {*};
 
-sub slk_init(int32) returns int32 is native(LIB) is export {*};
+sub slk_init(int32) returns int32 is native(&library) is export {*};
 
-sub slk_label(int32) returns Str is native(LIB) is export {*};
+sub slk_label(int32) returns Str is native(&library) is export {*};
 
-sub slk_noutrefresh() returns int32 is native(LIB) is export {*};
+sub slk_noutrefresh() returns int32 is native(&library) is export {*};
 
-sub slk_refresh() returns int32 is native(LIB) is export {*};
+sub slk_refresh() returns int32 is native(&library) is export {*};
 
-sub slk_restore() returns int32 is native(LIB) is export {*};
+sub slk_restore() returns int32 is native(&library) is export {*};
 
-sub slk_set(int32,Str,int32) returns int32 is native(LIB) is export {*};
+sub slk_set(int32,Str,int32) returns int32 is native(&library) is export {*};
 
-sub slk_touch() returns int32 is native(LIB) is export {*};
+sub slk_touch() returns int32 is native(&library) is export {*};
 
-sub standout() returns int32 is native(LIB) is export {*};
+sub standout() returns int32 is native(&library) is export {*};
 
-sub standend() returns int32 is native(LIB) is export {*};
+sub standend() returns int32 is native(&library) is export {*};
 
-sub start_color() returns int32 is native(LIB) is export {*};
+sub start_color() returns int32 is native(&library) is export {*};
 
-sub subpad(WINDOW,int32,int32,int32,int32) returns WINDOW is native(LIB) is export {*};
+sub subpad(WINDOW,int32,int32,int32,int32) returns WINDOW is native(&library) is export {*};
 
-sub subwin(WINDOW,int32,int32,int32,int32) returns WINDOW is native(LIB) is export {*};
+sub subwin(WINDOW,int32,int32,int32,int32) returns WINDOW is native(&library) is export {*};
 
-sub syncok(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub syncok(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub termattrs() returns int32 is native(LIB) is export {*};
+sub termattrs() returns int32 is native(&library) is export {*};
 
-sub termname() returns Str is native(LIB) is export {*};
+sub termname() returns Str is native(&library) is export {*};
 
-sub timeout(int32) is native(LIB) is export {*};
+sub timeout(int32) is native(&library) is export {*};
 
-sub touchline(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub touchline(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub touchwin(WINDOW) returns int32 is native(LIB) is export {*};
+sub touchwin(WINDOW) returns int32 is native(&library) is export {*};
 
-sub typeahead(int32) returns int32 is native(LIB) is export {*};
+sub typeahead(int32) returns int32 is native(&library) is export {*};
 
-sub ungetch(int32) returns int32 is native(LIB) is export {*};
+sub ungetch(int32) returns int32 is native(&library) is export {*};
 
-sub untouchwin(WINDOW) returns int32 is native(LIB) is export {*};
+sub untouchwin(WINDOW) returns int32 is native(&library) is export {*};
 
-sub use_env(int32) is native(LIB) is export {*};
+sub use_env(int32) is native(&library) is export {*};
 
-sub vidattr(int32) returns int32 is native(LIB) is export {*};
+sub vidattr(int32) returns int32 is native(&library) is export {*};
 
 # unknown type in: int vidputs(chtype, NCURSES_OUTC)
 
-sub vline(int32,int32) returns int32 is native(LIB) is export {*};
+sub vline(int32,int32) returns int32 is native(&library) is export {*};
 
 # skipping varargs: int vwprintw(WINDOW *, const char *,va_list)
 
@@ -593,223 +613,222 @@ sub vline(int32,int32) returns int32 is native(LIB) is export {*};
 
 # skipping varargs: int vw_scanw(WINDOW *, const char *,va_list)
 
-sub printw(Str) is native(LIB) is export {*};
+sub printw(Str) is native(&library) is export {*};
 
-sub waddch(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub waddch(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub waddchnstr(WINDOW,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub waddchnstr(WINDOW,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub waddchstr(WINDOW,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub waddchstr(WINDOW,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub waddnstr(WINDOW,Str,int32) returns int32 is native(LIB) is export {*};
+sub waddnstr(WINDOW,Str,int32) returns int32 is native(&library) is export {*};
 
-sub waddstr(WINDOW,Str) returns int32 is native(LIB) is export {*};
+sub waddstr(WINDOW,Str) returns int32 is native(&library) is export {*};
 
-sub wattron(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wattron(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub wattroff(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wattroff(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub wattrset(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wattrset(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub wattr_get(WINDOW,CArray[int32],CArray[int16],int32) returns int32 is native(LIB) is export {*};
+sub wattr_get(WINDOW,CArray[int32],CArray[int16],int32) returns int32 is native(&library) is export {*};
 
-sub wattr_on(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wattr_on(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wattr_off(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wattr_off(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wattr_set(WINDOW,int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub wattr_set(WINDOW,int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub wbkgd(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wbkgd(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub wbkgdset(WINDOW,int32) is native(LIB) is export {*};
+sub wbkgdset(WINDOW,int32) is native(&library) is export {*};
 
-sub wborder(WINDOW,int32,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub wborder(WINDOW,int32,int32,int32,int32,int32,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wchgat(WINDOW,int32,int32,int16,int32) returns int32 is native(LIB) is export {*};
+sub wchgat(WINDOW,int32,int32,int16,int32) returns int32 is native(&library) is export {*};
 
-sub wclear(WINDOW) returns int32 is native(LIB) is export {*};
+sub wclear(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wclrtobot(WINDOW) returns int32 is native(LIB) is export {*};
+sub wclrtobot(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wclrtoeol(WINDOW) returns int32 is native(LIB) is export {*};
+sub wclrtoeol(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wcolor_set(WINDOW,int16,int32) returns int32 is native(LIB) is export {*};
+sub wcolor_set(WINDOW,int16,int32) returns int32 is native(&library) is export {*};
 
-sub wcursyncup(WINDOW) is native(LIB) is export {*};
+sub wcursyncup(WINDOW) is native(&library) is export {*};
 
-sub wdelch(WINDOW) returns int32 is native(LIB) is export {*};
+sub wdelch(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wdeleteln(WINDOW) returns int32 is native(LIB) is export {*};
+sub wdeleteln(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wechochar(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wechochar(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub werase(WINDOW) returns int32 is native(LIB) is export {*};
+sub werase(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wgetch(WINDOW) returns int32 is native(LIB) is export {*};
+sub wgetch(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wgetnstr(WINDOW,Str,int32) returns int32 is native(LIB) is export {*};
+sub wgetnstr(WINDOW,Str,int32) returns int32 is native(&library) is export {*};
 
-sub wgetstr(WINDOW,Str) returns int32 is native(LIB) is export {*};
+sub wgetstr(WINDOW,Str) returns int32 is native(&library) is export {*};
 
-sub whline(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub whline(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub winch(WINDOW) returns int32 is native(LIB) is export {*};
+sub winch(WINDOW) returns int32 is native(&library) is export {*};
 
-sub winchnstr(WINDOW,CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub winchnstr(WINDOW,CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub winchstr(WINDOW,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub winchstr(WINDOW,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub winnstr(WINDOW,Str,int32) returns int32 is native(LIB) is export {*};
+sub winnstr(WINDOW,Str,int32) returns int32 is native(&library) is export {*};
 
-sub winsch(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub winsch(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub winsdelln(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub winsdelln(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub winsertln(WINDOW) returns int32 is native(LIB) is export {*};
+sub winsertln(WINDOW) returns int32 is native(&library) is export {*};
 
-sub winsnstr(WINDOW,Str,int32) returns int32 is native(LIB) is export {*};
+sub winsnstr(WINDOW,Str,int32) returns int32 is native(&library) is export {*};
 
-sub winsstr(WINDOW,Str) returns int32 is native(LIB) is export {*};
+sub winsstr(WINDOW,Str) returns int32 is native(&library) is export {*};
 
-sub winstr(WINDOW,Str) returns int32 is native(LIB) is export {*};
+sub winstr(WINDOW,Str) returns int32 is native(&library) is export {*};
 
-sub wmove(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wmove(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wnoutrefresh(WINDOW) returns int32 is native(LIB) is export {*};
+sub wnoutrefresh(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wredrawln(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wredrawln(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wrefresh(WINDOW) returns int32 is native(LIB) is export {*};
+sub wrefresh(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wscrl(WINDOW,int32) returns int32 is native(LIB) is export {*};
+sub wscrl(WINDOW,int32) returns int32 is native(&library) is export {*};
 
-sub wsetscrreg(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wsetscrreg(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wstandout(WINDOW) returns int32 is native(LIB) is export {*};
+sub wstandout(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wstandend(WINDOW) returns int32 is native(LIB) is export {*};
+sub wstandend(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wsyncdown(WINDOW) is native(LIB) is export {*};
+sub wsyncdown(WINDOW) is native(&library) is export {*};
 
-sub wsyncup(WINDOW) is native(LIB) is export {*};
+sub wsyncup(WINDOW) is native(&library) is export {*};
 
-sub wtimeout(WINDOW,int32) is native(LIB) is export {*};
+sub wtimeout(WINDOW,int32) is native(&library) is export {*};
 
-sub wtouchln(WINDOW,int32,int32,int32) returns int32 is native(LIB) is export {*};
+sub wtouchln(WINDOW,int32,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wvline(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wvline(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub tigetflag(Str) returns int32 is native(LIB) is export {*};
+sub tigetflag(Str) returns int32 is native(&library) is export {*};
 
-sub tigetnum(Str) returns int32 is native(LIB) is export {*};
+sub tigetnum(Str) returns int32 is native(&library) is export {*};
 
-sub tigetstr(Str) returns Str is native(LIB) is export {*};
+sub tigetstr(Str) returns Str is native(&library) is export {*};
 
-sub putp(Str) returns int32 is native(LIB) is export {*};
+sub putp(Str) returns int32 is native(&library) is export {*};
 
 # skipping varargs: char * tparm(const char *, ...)
 
 # skipping varargs: char * tiparm(const char *, ...)
 
-sub getattrs(WINDOW) returns int32 is native(LIB) is export {*};
+sub getattrs(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getcurx(WINDOW) returns int32 is native(LIB) is export {*};
+sub getcurx(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getcury(WINDOW) returns int32 is native(LIB) is export {*};
+sub getcury(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getbegx(WINDOW) returns int32 is native(LIB) is export {*};
+sub getbegx(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getbegy(WINDOW) returns int32 is native(LIB) is export {*};
+sub getbegy(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getmaxx(WINDOW) returns int32 is native(LIB) is export {*};
+sub getmaxx(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getmaxy(WINDOW) returns int32 is native(LIB) is export {*};
+sub getmaxy(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getparx(WINDOW) returns int32 is native(LIB) is export {*};
+sub getparx(WINDOW) returns int32 is native(&library) is export {*};
 
-sub getpary(WINDOW) returns int32 is native(LIB) is export {*};
+sub getpary(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_term_resized(int32,int32) returns int32 is native(LIB) is export {*};
+sub is_term_resized(int32,int32) returns int32 is native(&library) is export {*};
 
-sub keybound(int32,int32) returns Str is native(LIB) is export {*};
+sub keybound(int32,int32) returns Str is native(&library) is export {*};
 
-sub curses_version() returns Str is native(LIB) is export {*};
+sub curses_version() returns Str is native(&library) is export {*};
 
-sub assume_default_colors(int32,int32) returns int32 is native(LIB) is export {*};
+sub assume_default_colors(int32,int32) returns int32 is native(&library) is export {*};
 
-sub define_key(Str,int32) returns int32 is native(LIB) is export {*};
+sub define_key(Str,int32) returns int32 is native(&library) is export {*};
 
-sub get_escdelay() returns int32 is native(LIB) is export {*};
+sub get_escdelay() returns int32 is native(&library) is export {*};
 
-sub key_defined(Str) returns int32 is native(LIB) is export {*};
+sub key_defined(Str) returns int32 is native(&library) is export {*};
 
-sub keyok(int32,int32) returns int32 is native(LIB) is export {*};
+sub keyok(int32,int32) returns int32 is native(&library) is export {*};
 
-sub resize_term(int32,int32) returns int32 is native(LIB) is export {*};
+sub resize_term(int32,int32) returns int32 is native(&library) is export {*};
 
-sub resizeterm(int32,int32) returns int32 is native(LIB) is export {*};
+sub resizeterm(int32,int32) returns int32 is native(&library) is export {*};
 
-sub set_escdelay(int32) returns int32 is native(LIB) is export {*};
+sub set_escdelay(int32) returns int32 is native(&library) is export {*};
 
-sub set_tabsize(int32) returns int32 is native(LIB) is export {*};
+sub set_tabsize(int32) returns int32 is native(&library) is export {*};
 
-sub use_default_colors() returns int32 is native(LIB) is export {*};
+sub use_default_colors() returns int32 is native(&library) is export {*};
 
-sub use_extended_names(int32) returns int32 is native(LIB) is export {*};
+sub use_extended_names(int32) returns int32 is native(&library) is export {*};
 
-sub use_legacy_coding(int32) returns int32 is native(LIB) is export {*};
+sub use_legacy_coding(int32) returns int32 is native(&library) is export {*};
 
 # unknown type in: int use_screen(SCREEN *, NCURSES_SCREEN_CB, void *)
 
 # unknown type in: int use_window(WINDOW *, NCURSES_WINDOW_CB, void *)
 
-sub wresize(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wresize(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub wgetparent(WINDOW) returns WINDOW is native(LIB) is export {*};
+sub wgetparent(WINDOW) returns WINDOW is native(&library) is export {*};
 
-sub is_cleared(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_cleared(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_idcok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_idcok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_idlok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_idlok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_immedok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_immedok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_keypad(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_keypad(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_leaveok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_leaveok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_nodelay(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_nodelay(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_notimeout(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_notimeout(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_pad(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_pad(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_scrollok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_scrollok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_subwin(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_subwin(WINDOW) returns int32 is native(&library) is export {*};
 
-sub is_syncok(WINDOW) returns int32 is native(LIB) is export {*};
+sub is_syncok(WINDOW) returns int32 is native(&library) is export {*};
 
-sub wgetscrreg(WINDOW,CArray[int32],CArray[int32]) returns int32 is native(LIB) is export {*};
+sub wgetscrreg(WINDOW,CArray[int32],CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub getmouse(MEVENT) returns int32 is native(LIB) is export {*};
+sub getmouse(MEVENT) returns int32 is native(&library) is export {*};
 
-sub ungetmouse(MEVENT) returns int32 is native(LIB) is export {*};
+sub ungetmouse(MEVENT) returns int32 is native(&library) is export {*};
 
-sub mousemask(int32,CArray[int32]) returns int32 is native(LIB) is export {*};
+sub mousemask(int32,CArray[int32]) returns int32 is native(&library) is export {*};
 
-sub wenclose(WINDOW,int32,int32) returns int32 is native(LIB) is export {*};
+sub wenclose(WINDOW,int32,int32) returns int32 is native(&library) is export {*};
 
-sub mouseinterval(int32) returns int32 is native(LIB) is export {*};
+sub mouseinterval(int32) returns int32 is native(&library) is export {*};
 
-sub wmouse_trafo(WINDOW,CArray[int32],CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub wmouse_trafo(WINDOW,CArray[int32],CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mouse_trafo(CArray[int32],CArray[int32],int32) returns int32 is native(LIB) is export {*};
+sub mouse_trafo(CArray[int32],CArray[int32],int32) returns int32 is native(&library) is export {*};
 
-sub mcprint(Str,int32) returns int32 is native(LIB) is export {*};
+sub mcprint(Str,int32) returns int32 is native(&library) is export {*};
 
-sub has_key(int32) returns int32 is native(LIB) is export {*};
+sub has_key(int32) returns int32 is native(&library) is export {*};
 
-sub trace(int32) is native(LIB) is export {*};
-
+sub trace(int32) is native(&library) is export {*};

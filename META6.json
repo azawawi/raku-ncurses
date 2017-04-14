@@ -1,9 +1,13 @@
 {
   "name"        : "NCurses",
-  "version"     : "*",
+  "version"     : "0.0.1",
   "perl"        : "6.c",
   "description" : "Perl 6 interface to NCurses, the text-based interface libary",
-  "depends"     : [ ],
+  "test-depends"     : [
+    "LibraryCheck"
+  ],
+  "auth"          : "github:azawawi",
+  "authors"       : [ "Ahmad M. Zawawi" ],
   "provides"    : {
     "NCurses"	  : "lib/NCurses.pm6"
   },
