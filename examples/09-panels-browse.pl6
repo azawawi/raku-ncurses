@@ -9,7 +9,7 @@ constant NLINES = 10;
 constant NCOLS  = 40;
 
 # Put all the windows
-sub create-wins($n) returns Array {	
+sub create-wins($n) returns Array {
     my $y = 2;
     my $x = 10;
     my @wins;
@@ -30,26 +30,24 @@ sub create-wins($n) returns Array {
 # Show the window with a border and a label
 #
 sub win-show($win, Str $label, $label_color)
-{	
+{
     my $startx;
     my $starty;
     my $height;
     my $width;
 
     getbegyx($win, $starty, $startx);
-	getmaxyx($win, $height, $width);
+    getmaxyx($win, $height, $width);
 
-	box($win, 0, 0);
-	mvwaddch($win, 2, 0, $acs_map[ACS_LTEE.ord]);
-	mvwhline($win, 2, 1, $acs_map[ACS_HLINE.ord], $width - 2);
-	mvwaddch($win, 2, $width - 1, $acs_map[ACS_RTEE.ord]);
-	
-	print_in_middle($win, 1, 0, $width, $label, COLOR_PAIR[$label_color - 1]);
+    box($win, 0, 0);
+    mvwaddch($win, 2, 0, $acs_map[ACS_LTEE.ord]);
+    mvwhline($win, 2, 1, $acs_map[ACS_HLINE.ord], $width - 2);
+    mvwaddch($win, 2, $width - 1, $acs_map[ACS_RTEE.ord]);
+
+    print_in_middle($win, 1, 0, $width, $label, COLOR_PAIR[$label_color - 1]);
 }
 
 sub print_in_middle($win, $starty, $startx, $width, Str $string, $color) {
-    $win = $stdscr unless $win;
-
     my $x;
     my $y;
 
@@ -93,24 +91,20 @@ set_panel_userptr(@my_panels[2], @my_panels[0]);
 
 # Show it on the screen
 attron(COLOR_PAIR[3]);
-mvprintw(0, 0, "Use tab to browse through the windows (F1 to Exit)");
+mvprintw(0, 0, "Use tab to browse through the windows (ESC to Exit)");
 attroff(COLOR_PAIR[3]);
 
 nc_refresh;
 
 $top = @my_panels[2];
-my $count = 0;
-while (my $ch = getch) != KEY_F1
-{	
+while (my $ch = getch) != 27 {
     if $ch == 9 {
-        mvprintw(0, 0, "$count");
-        nc_refresh;
-        $count++;
         $top = panel_userptr($top);
         top_panel($top);
     }
     update_panels;
-    wrefresh($_) for @my-wins;
+    doupdate;
+    #wrefresh($_) for @my-wins;
 }
 
 LEAVE {

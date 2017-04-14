@@ -12,7 +12,7 @@ sub library {
     return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
 
     # Linux/UNIX
-    constant LIB = 'ncursesw';
+    constant LIB = 'ncurses';
     if library-exists(LIB, v5) {
         return sprintf("lib%s.so.5", LIB);
     } elsif library-exists(LIB, v6) {
