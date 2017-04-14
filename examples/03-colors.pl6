@@ -14,7 +14,7 @@ use NCurses;
 
 # Initialize an NCurses window
 my $main-win = initscr;
-die "Failed to initialize ncurses\n" unless $main-win.defined;
+die "Failed to initialize ncurses\n" unless $main-win;
 
 # Initialize colours
 start_color;
@@ -56,5 +56,6 @@ while getch() < 0 { };
 
 # Clean up
 LEAVE {
-    endwin if $main-win;
+    delwin($main-win) if $main-win;
+    endwin;
 }

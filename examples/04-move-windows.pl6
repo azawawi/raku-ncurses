@@ -22,7 +22,7 @@ my $y      = Int( ($rows - $height) / 2 );
 
 # Initialize an NCurses main window
 my $main-win = initscr;
-die "Failed to initialize ncurses\n" unless $main-win.defined;
+die "Failed to initialize ncurses\n" unless $main-win;
 
 # Switch of echoing and enable keypad (for arrow keys)
 

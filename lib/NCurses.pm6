@@ -6,7 +6,7 @@ use NativeCall;
 
 sub library is export {
   # Environment variable overrides auto-detection
-  return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>.defined;
+  return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
 
   # On MacOS X using howbrew
   return "libncurses.dylib" if $*KERNEL.name eq 'darwin';

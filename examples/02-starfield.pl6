@@ -11,7 +11,7 @@ use NCurses;
 
 
 my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win.defined;
+die "Failed to initialize ncurses\n" unless $win;
 
 constant numstars  = 100;
 my $screen-x  =  getmaxx($win);
@@ -51,4 +51,10 @@ repeat {
     sleep( .05 );
 } while getch() < 0;
 
-endwin;
+# Cleanup
+LEAVE {
+    delwin($win)  if $win;
+
+    # End curses mode
+    endwin;
+}

@@ -7,7 +7,7 @@ NCurses provides a Perl 6 native interface to `ncurses` library.
 ```Perl6
 # Initialize curses window
 my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win.defined;
+die "Failed to initialize ncurses\n" unless $win;
 
 # Print Hello World
 printw( "Hello World" );

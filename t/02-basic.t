@@ -8,7 +8,7 @@ plan 1;
 
 # Start curses mode
 my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win.defined;
-ok $win.defined, "ncurses mode initialized";
+die "Failed to initialize ncurses\n" unless $win;
+ok $win, "ncurses mode initialized";
 
 endwin;
