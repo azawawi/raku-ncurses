@@ -9,6 +9,11 @@
     },
     "repo-type"     : "git",
     "source-url"    : "git://github.com/azawawi/perl6-ncurses.git",
+    "tags"          : [
+        "CLI",
+        "Terminal",
+        "NativeCall"
+    ],
     "test-depends"  : [
         "LibraryCheck",
         "Test"
