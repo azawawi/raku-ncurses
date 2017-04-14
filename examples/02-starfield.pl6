@@ -9,9 +9,14 @@ use v6;
 use lib 'lib';
 use NCurses;
 
+
+my $win = initscr;
+die "Failed to initialize ncurses\n" unless $win.defined;
+
 constant numstars  = 100;
-constant screen-x  =  80;
-constant screen-y  =  24;
+my $screen-x  =  getmaxx($win);
+my $screen-y  =  getmaxy($win);
+
 constant max-speed =   4;
 
 class Star {
@@ -20,22 +25,19 @@ class Star {
     has Int $.s;
 
     submethod BUILD {
-        $!x = (^screen-x).pick;
-        $!y = (^screen-y).pick;
+        $!x = (^$screen-x).pick;
+        $!y = (^$screen-y).pick;
         $!s = (1 .. max-speed).pick;
     }
 
     method move {
         $!x = ($!x >= $!s)
           ?? $!x - $!s
-          !! screen-x;
+          !! $screen-x;
     }
 }
 
 my Star @stars = gather { take Star.new for ^numstars };
-
-my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win.defined;
 
 curs_set( 0 );
 timeout( 0 );
