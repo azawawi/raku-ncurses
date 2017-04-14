@@ -19,12 +19,12 @@ my @choices = [
 my $n_choices = @choices.elems;
 
 sub print_menu($menu_win, $highlight) {
-	my $x = 2;
-	my $y = 2;
-	box($menu_win, 0, 0);
+    my $x = 2;
+    my $y = 2;
+    box($menu_win, 0, 0);
     for 0..$n_choices - 1 -> $i {
         if $highlight == $i + 1 {
-            # High light the present choice
+            # Highlight the user-selected choice
             wattron($menu_win, A_REVERSE); 
             mvwprintw($menu_win, $y, $x, sprintf("%s", @choices[$i]));
             wattroff($menu_win, A_REVERSE);
@@ -47,15 +47,15 @@ cbreak;
 
 my $startx = Int((80 - WIDTH) / 2);
 my $starty = Int((24 - HEIGHT) / 2);
-	
+
 my $menu_win = newwin(HEIGHT, WIDTH, $starty, $startx);
 keypad($menu_win, 1);
 mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
 nc_refresh;
 print_menu($menu_win, $highlight);
-while True {	
+while True {
     my $c = wgetch($menu_win);
-	given $c {
+    given $c {
         when KEY_UP {
             if $highlight == 1 {
                 $highlight = $n_choices;
