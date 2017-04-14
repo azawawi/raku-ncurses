@@ -24,6 +24,16 @@ sub library is export {
 }
 
 
+# Workaround since you need late binding of COLOR_PAIRS after initscr is called
+# for the first time
+my $COLOR_PAIRS;
+sub COLOR_PAIRS is export {
+    unless $COLOR_PAIRS {
+        $COLOR_PAIRS = cglobal(&library, 'COLOR_PAIRS', int32);
+    }
+    return $COLOR_PAIRS;
+}
+
 class WINDOW is repr('CPointer') { }
 class SCREEN is repr('CPointer') { }
 

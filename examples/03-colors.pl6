@@ -26,7 +26,7 @@ constant START-Y = 20;
 mvaddstr(START-X, START-Y, " Hello, world! ");
 
 # Check if we have colors with at least 13 colors
-if has_colors() { #&& COLOR_PAIRS >= 13 ) {
+if has_colors() && COLOR_PAIRS() >= 13 {
 
     # Initialize a bunch of colour foreground/background pairs
     init_pair(1,  COLOR_RED,     COLOR_BLACK);
@@ -55,4 +55,6 @@ nc_refresh;
 while getch() < 0 { };
 
 # Clean up
-endwin;
+LEAVE {
+    endwin if $main-win;
+}
