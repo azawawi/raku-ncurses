@@ -943,3 +943,7 @@ class PANEL  is repr('CPointer') { }
 sub new_panel(WINDOW) returns PANEL is native(&panel-library) is export {*};
 
 sub update_panels() is native(&panel-library) is export {*};
+
+sub show_panel(PANEL) is native(&panel-library) is export {*};
+
+sub hide_panel(PANEL) is native(&panel-library) is export {*};
