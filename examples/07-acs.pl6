@@ -4,7 +4,6 @@ use v6;
 
 use lib 'lib';
 use NCurses;
-use NativeCall;
 
 initscr() or die "Could not initialize curses window";
 
