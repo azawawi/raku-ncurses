@@ -5,19 +5,28 @@ NCurses provides a Perl 6 native interface to `ncurses` library.
 ## Example
 
 ```Perl6
+use v6;
+use NCurses;
+
 # Initialize curses window
-my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win;
+my $win = initscr() or die "Failed to initialize ncurses\n";
+start_color;
+
+# Initialize colors
+init_pair(1, COLOR_WHITE, COLOR_RED);
+init_pair(2, COLOR_WHITE, COLOR_BLUE);
 
 # Print Hello World
-printw( "Hello World" );
-mvaddstr( 5, 10, "Press any key to exit..." );
+color_set(1, 0);
+mvaddstr( 10, 10, " Hello world " );
+color_set(2, 0);
+mvaddstr( LINES() - 2, 2, "Press any key to exit..." );
 
 # Refresh (this is needed)
 nc_refresh;
 
 # Wait for a keypress
-while getch() < 0 { };
+getch;
 
 # Cleanup
 LEAVE {
