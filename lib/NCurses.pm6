@@ -1085,6 +1085,8 @@ sub set_item_opts(ITEM, int32)             returns int32 is native(&menu-library
 sub item_opts_on(ITEM, int32)              returns int32 is native(&menu-library) is export {*}
 sub item_opts_off(ITEM, int32)             returns int32 is native(&menu-library) is export {*}
 sub item_opts(ITEM)                        returns int32 is native(&menu-library) is export {*}
+sub set_item_userptr(ITEM, int32)             returns int32 is native(&menu-library) is export {*}
+sub item_userptr(ITEM)                     returns int32 is native(&menu-library) is export {*}
 
 #
 # Form library API
