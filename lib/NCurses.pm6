@@ -1048,19 +1048,25 @@ constant O_SELECTABLE is export = 0x01;
 #
 # Menu library subroutines
 #
-sub new_menu(CArray[ITEM])      returns MENU  is native(&menu-library) is export {*}
-sub free_menu(MENU)             returns int32 is native(&menu-library) is export {*}
-sub menu_driver(MENU, int32)    returns int32 is native(&menu-library) is export {*}
-sub post_menu(MENU)             returns int32 is native(&menu-library) is export {*}
-sub unpost_menu(MENU)           returns int32 is native(&menu-library) is export {*}
-sub set_menu_mark(MENU, Str)    returns int32 is native(&menu-library) is export {*}
-sub set_menu_win(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
-sub set_menu_sub(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
-sub menu_opts_off(MENU, int32)  returns int32 is native(&menu-library) is export {*}
-sub set_menu_format(MENU, int32, int32)  returns int32 is native(&menu-library) is export {*}
+sub new_menu(CArray[ITEM])               returns MENU         is native(&menu-library) is export {*}
+sub free_menu(MENU)                      returns int32        is native(&menu-library) is export {*}
+sub menu_driver(MENU, int32)             returns int32        is native(&menu-library) is export {*}
+sub post_menu(MENU)                      returns int32        is native(&menu-library) is export {*}
+sub unpost_menu(MENU)                    returns int32        is native(&menu-library) is export {*}
+sub set_menu_mark(MENU, Str)             returns int32        is native(&menu-library) is export {*}
+sub set_menu_win(MENU, WINDOW)           returns int32        is native(&menu-library) is export {*}
+sub set_menu_sub(MENU, WINDOW)           returns int32        is native(&menu-library) is export {*}
+sub menu_opts_off(MENU, int32)           returns int32        is native(&menu-library) is export {*}
+sub item_count(MENU)                     returns int32        is native(&menu-library) is export {*}
+sub menu_items(MENU)                     returns CArray[ITEM] is native(&menu-library) is export {*}
+sub set_menu_format(MENU, int32, int32)  returns int32        is native(&menu-library) is export {*}
 
-sub new_item(CArray[uint8], CArray[uint8]) returns ITEM is native(&menu-library) is export {*}
-sub free_item(ITEM)          returns int32 is native(&menu-library) is export {*}
+sub new_item(CArray[uint8], CArray[uint8]) returns ITEM  is native(&menu-library) is export {*}
+sub free_item(ITEM)                        returns int32 is native(&menu-library) is export {*}
+sub item_name(ITEM)                        returns Str   is native(&menu-library) is export {*}
+sub item_description(ITEM)                 returns Str   is native(&menu-library) is export {*}
+sub set_item_value(ITEM, Bool)             returns int32 is native(&menu-library) is export {*}
+sub item_value(ITEM)                       returns Bool  is native(&menu-library) is export {*}
 
 #
 # Form library API
