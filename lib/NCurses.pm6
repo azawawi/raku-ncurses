@@ -1045,6 +1045,7 @@ sub unpost_menu(MENU)           returns int32 is native(&menu-library) is export
 sub set_menu_mark(MENU, Str)    returns int32 is native(&menu-library) is export {*}
 sub set_menu_win(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
 sub set_menu_sub(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
+sub set_menu_format(MENU, int32, int32)  returns int32 is native(&menu-library) is export {*}
 
 sub new_item(CArray[uint8], CArray[uint8]) returns ITEM is native(&menu-library) is export {*}
 sub free_item(ITEM)          returns int32 is native(&menu-library) is export {*}
