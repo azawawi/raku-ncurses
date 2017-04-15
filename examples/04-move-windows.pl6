@@ -12,22 +12,21 @@ use v6;
 use lib 'lib';
 use NCurses;
 
-#  Set the dimensions and initial position for our child window
-my $width  = 23;
-my $height = 7;
-my $rows   = 25;
-my $cols   = 80;
-my $x      = Int( ($cols - $width)  / 2 );
-my $y      = Int( ($rows - $height) / 2 );
-
 # Initialize an NCurses main window
-my $main-win = initscr;
-die "Failed to initialize ncurses\n" unless $main-win;
+my $main-win = initscr() or die "Failed to initialize ncurses\n";
 
 # Switch of echoing and enable keypad (for arrow keys)
 
 noecho;
 keypad($main-win, TRUE);
+
+#  Set the dimensions and initial position for our child window
+my $width  = 23;
+my $height = 7;
+my $rows   = getmaxy($main-win);
+my $cols   = getmaxx($main-win);
+my $x      = Int( ($cols - $width)  / 2 );
+my $y      = Int( ($rows - $height) / 2 );
 
 # Make our child window, and add a border and some text to it.
 my $child-win = subwin($main-win, $height, $width, $y, $x);
