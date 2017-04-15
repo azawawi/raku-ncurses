@@ -23,6 +23,19 @@ sub library {
     return sprintf("lib%s.so", LIB);
 }
 
+class WINDOW is export is repr('CPointer') { }
+class SCREEN is export is repr('CPointer') { }
+
+# Global variables
+our $stdscr   is export = cglobal(&library, 'stdscr',   WINDOW);
+our $acs_map  is export = cglobal(&library, 'acs_map',  CArray[int64]);
+our $COLORS   is export = cglobal(&library, 'COLORS',   int32);
+our $COLS     is export = cglobal(&library, 'COLS',     int32);
+our $ESCDELAY is export = cglobal(&library, 'ESCDELAY', int32);
+our $LINES    is export = cglobal(&library, 'LINES',    int32);
+our $TABSIZE  is export = cglobal(&library, 'TABSIZE',  int32);
+
+# Special case: COLOR_PAIRS global variable
 # Workaround since you need late binding of COLOR_PAIRS after initscr is called
 # for the first time
 my $COLOR_PAIRS;
@@ -32,12 +45,6 @@ sub COLOR_PAIRS is export {
     }
     return $COLOR_PAIRS;
 }
-
-class WINDOW is repr('CPointer') { }
-class SCREEN is repr('CPointer') { }
-
-our $stdscr is export = cglobal(&library, 'stdscr', WINDOW);
-our $acs_map is export = cglobal(&library, 'acs_map', CArray[int64]);
 
 class MEVENT is repr('CStruct') is export {
     #short id;           /* ID to distinguish multiple devices */
@@ -991,12 +998,113 @@ sub form-library {
     return sprintf("lib%s.so", LIB);
 }
 
-class FORM is repr('CPointer') { }
+class FORM  is export is repr('CPointer') { }
+class FIELD is export is repr('CPointer') { }
 
-sub scale_form(FORM, int32 is rw, int32 is rw) returns int32 is native(&form-library) is export {*}
+# Field options
+constant O_VISIBLE is export         = 0x0001;
+constant O_ACTIVE is export          = 0x0002;
+constant O_PUBLIC is export          = 0x0004;
+constant O_EDIT is export            = 0x0008;
+constant O_WRAP is export            = 0x0010;
+constant O_BLANK is export           = 0x0020;
+constant O_AUTOSKIP is export        = 0x0040;
+constant O_NULLOK is export          = 0x0080;
+constant O_PASSOK is export          = 0x0100;
+constant O_STATIC is export          = 0x0200;
+# ncurses extensions
+constant O_DYNAMIC_JUSTIFY is export = 0x0400;
+constant O_NO_LEFT_STRIP is export   = 0x0800;
+
+# Form driver commands
+constant REQ_NEXT_PAGE is export     = KEY_MAX + 1; #  move to next page
+constant REQ_PREV_PAGE is export     = KEY_MAX + 2; #  move to previous page
+constant REQ_FIRST_PAGE is export    = KEY_MAX + 3; #  move to first page
+constant REQ_LAST_PAGE is export     = KEY_MAX + 4; #  move to last page
+constant REQ_NEXT_FIELD is export    = KEY_MAX + 5; #  move to next field
+constant REQ_PREV_FIELD is export    = KEY_MAX + 6; #  move to previous field
+constant REQ_FIRST_FIELD is export   = KEY_MAX + 7; #  move to first field
+constant REQ_LAST_FIELD is export    = KEY_MAX + 8; #  move to last field
+constant REQ_SNEXT_FIELD is export   = KEY_MAX + 9; #  move to sorted next field
+constant REQ_SPREV_FIELD is export   = KEY_MAX + 10; #  move to sorted prev field
+constant REQ_SFIRST_FIELD is export  = KEY_MAX + 11; #  move to sorted first field
+constant REQ_SLAST_FIELD is export   = KEY_MAX + 12; #  move to sorted last field
+constant REQ_LEFT_FIELD is export    = KEY_MAX + 13; #  move to left to field
+constant REQ_RIGHT_FIELD is export   = KEY_MAX + 14; #  move to right to field
+constant REQ_UP_FIELD is export      = KEY_MAX + 15; #  move to up to field
+constant REQ_DOWN_FIELD is export    = KEY_MAX + 16; #  move to down to field
+constant REQ_NEXT_CHAR is export     = KEY_MAX + 17; #  move to next char in field
+constant REQ_PREV_CHAR is export     = KEY_MAX + 18; #  move to prev char in field
+constant REQ_NEXT_LINE is export     = KEY_MAX + 19; #  move to next line in field
+constant REQ_PREV_LINE is export     = KEY_MAX + 20; #  move to prev line in field
+constant REQ_NEXT_WORD is export     = KEY_MAX + 21; #  move to next word in field
+constant REQ_PREV_WORD is export     = KEY_MAX + 22; #  move to prev word in field
+constant REQ_BEG_FIELD is export     = KEY_MAX + 23; #  move to first char in field
+constant REQ_END_FIELD is export     = KEY_MAX + 24; #  move after last char in fld
+constant REQ_BEG_LINE is export      = KEY_MAX + 25; #  move to beginning of line
+constant REQ_END_LINE is export      = KEY_MAX + 26; #  move after last char in line
+constant REQ_LEFT_CHAR is export     = KEY_MAX + 27; #  move left in field
+constant REQ_RIGHT_CHAR is export    = KEY_MAX + 28; #  move right in field
+constant REQ_UP_CHAR is export       = KEY_MAX + 29; #  move up in field
+constant REQ_DOWN_CHAR is export     = KEY_MAX + 30; #  move down in field
+constant REQ_NEW_LINE is export      = KEY_MAX + 31; #  insert/overlay new line
+constant REQ_INS_CHAR is export      = KEY_MAX + 32; #  insert blank char at cursor
+constant REQ_INS_LINE is export      = KEY_MAX + 33; #  insert blank line at cursor
+constant REQ_DEL_CHAR is export      = KEY_MAX + 34; #  delete char at cursor
+constant REQ_DEL_PREV is export      = KEY_MAX + 35; #  delete char before cursor
+constant REQ_DEL_LINE is export      = KEY_MAX + 36; #  delete line at cursor
+constant REQ_DEL_WORD is export      = KEY_MAX + 37; #  delete word at cursor
+constant REQ_CLR_EOL is export       = KEY_MAX + 38; #  clear to end of line
+constant REQ_CLR_EOF is export       = KEY_MAX + 39; #  clear to end of field
+constant REQ_CLR_FIELD is export     = KEY_MAX + 40; #  clear entire field
+constant REQ_OVL_MODE is export      = KEY_MAX + 41; #  begin overlay mode
+constant REQ_INS_MODE is export      = KEY_MAX + 42; #  begin insert mode
+constant REQ_SCR_FLINE is export     = KEY_MAX + 43; #  scroll field forward a line
+constant REQ_SCR_BLINE is export     = KEY_MAX + 44; #  scroll field backward a line
+constant REQ_SCR_FPAGE is export     = KEY_MAX + 45; #  scroll field forward a page
+constant REQ_SCR_BPAGE is export     = KEY_MAX + 46; #  scroll field backward a page
+constant REQ_SCR_FHPAGE is export    = KEY_MAX + 47; #  scroll field forward half page
+constant REQ_SCR_BHPAGE is export    = KEY_MAX + 48; #  scroll field backward half page
+constant REQ_SCR_FCHAR is export     = KEY_MAX + 49; #  horizontal scroll char
+constant REQ_SCR_BCHAR is export     = KEY_MAX + 50; #  horizontal scroll char
+constant REQ_SCR_HFLINE is export    = KEY_MAX + 51; #  horizontal scroll line
+constant REQ_SCR_HBLINE is export    = KEY_MAX + 52; #  horizontal scroll line
+constant REQ_SCR_HFHALF is export    = KEY_MAX + 53; #  horizontal scroll half line
+constant REQ_SCR_HBHALF is export    = KEY_MAX + 54; #  horizontal scroll half line
+constant REQ_VALIDATION is export    = KEY_MAX + 55; #  validate field
+constant REQ_NEXT_CHOICE is export   = KEY_MAX + 56; #  display next field choice
+constant REQ_PREV_CHOICE is export   = KEY_MAX + 57; #  display prev field choice
+constant MIN_FORM_COMMAND is export  = KEY_MAX + 1;  #  used by form_driver
+constant MAX_FORM_COMMAND is export  = KEY_MAX + 57; #  used by form_driver
+
+sub _scale_form (FORM, int32 is rw, int32 is rw) returns int32 is symbol('scale_form') is native(&form-library) {*}
+
+sub scale_form(FORM $form, $rows is rw, $cols is rw) is export {
+    my int32 $t-rows;
+    my int32 $t-cols;
+    _scale_form($form, $t-rows, $t-cols);
+    $rows = $t-rows;
+    $cols = $t-cols;
+}
 
 sub post_form(FORM) returns int32 is native(&form-library) is export {*}
 
 sub unpost_form(FORM) returns int32 is native(&form-library) is export {*}
 
 sub form_driver(FORM, int32) returns int32 is native(&form-library) is export {*}
+
+sub free_form(FORM) returns int32 is native(&form-library) is export {*}
+
+sub set_form_win(FORM, WINDOW) returns int32 is native(&form-library) is export {*}
+
+sub new_field(int32, int32, int32, int32, int32, int32) returns FIELD is native(&form-library) is export {*}
+
+sub free_field(FIELD) returns int32 is native(&form-library) is export {*}
+
+sub new_form(CArray[FIELD]) returns FORM is native(&form-library) is export {*}
+
+sub set_form_sub(FORM, WINDOW) returns int32 is native(&form-library) is export {*}
+
+sub set_field_back(FIELD, int32) returns int32 is native(&form-library) is export {*}
+
+sub field_opts_off(FIELD, int32) returns int32 is native(&form-library) is export {*}

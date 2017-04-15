@@ -3,6 +3,7 @@
 use v6;
 
 use lib 'lib';
+use NativeCall;
 use NCurses;
 
 sub print-in-middle($win, $starty, $startx, $width, Str $string, $color) {
@@ -12,7 +13,7 @@ sub print-in-middle($win, $starty, $startx, $width, Str $string, $color) {
     getyx($win, $y, $x);
     $x     = $startx if $startx != 0;
     $y     = $starty if $starty != 0;
-    $width = 80 if $width == 0;
+    $width =      80 if $width  == 0;
 
     $x = $startx + Int( ($width - $string.chars) / 2);
     wattron($win, $color);
@@ -26,26 +27,26 @@ initscr() or die "Could not Initialize curses";
 start_color;
 cbreak;
 noecho;
-keypad(stdscr, 1);
+keypad($stdscr, 1);
 
 # Initialize few color pairs
 init_pair(1, COLOR_RED, COLOR_BLACK);
 
 # Initialize the fields
-my $field;
-$field[0] = new_field(1, 10, 6, 1, 0, 0);
-$field[1] = new_field(1, 10, 8, 1, 0, 0);
-$field[2] = NULL;
+my $fields = CArray[FIELD].new;
+$fields[0] = new_field(1, 10, 6, 1, 0, 0);
+$fields[1] = new_field(1, 10, 8, 1, 0, 0);
+$fields[2] = FIELD.new;
 
 # Set field options
-set_field_back($field[0], A_UNDERLINE);
+set_field_back($fields[0], A_UNDERLINE);
 #  Don't go to next field when this Field is filled up
-field_opts_off($field[0], O_AUTOSKIP);
-set_field_back($field[1], A_UNDERLINE);
-field_opts_off($field[1], O_AUTOSKIP);
+field_opts_off($fields[0], O_AUTOSKIP);
+set_field_back($fields[1], A_UNDERLINE);
+field_opts_off($fields[1], O_AUTOSKIP);
 
 # Create the form and post it
-my $my_form = new_form($field);
+my $my_form = new_form($fields);
 
 my $rows;
 my $cols;
@@ -63,16 +64,16 @@ set_form_sub($my_form, derwin($my_form_win, $rows, $cols, 2, 2));
 
 # Print a border around the main window and print a title
 box($my_form_win, 0, 0);
-print-in-middle($my_form_win, 1, 0, $cols + 4, "My Form", COLOR_PAIR(1));
+print-in-middle($my_form_win, 1, 0, $cols + 4, "My Form", COLOR_PAIRS()[0]);
 
 post_form($my_form);
 wrefresh($my_form_win);
 
-mvprintw(LINES - 2, 0, "Use UP, DOWN arrow keys to switch between fields");
+mvprintw($LINES - 2, 0, "Use UP, DOWN arrow keys to switch between fields");
 nc_refresh;
 
 # Loop through to get user requests
-while (my $ch = wgetch(my_form_win)) != KEY_F(1) {
+while (my $ch = wgetch($my_form_win)) != KEY_F1 {
     given $ch {	
         when KEY_DOWN {
             # Go to next field
@@ -96,8 +97,8 @@ while (my $ch = wgetch(my_form_win)) != KEY_F(1) {
 # Un post form and free the memory
 unpost_form($my_form);
 free_form($my_form);
-free_field($field[0]);
-free_field($field[1]); 
+free_field($fields[0]);
+free_field($fields[1]);
 
 LEAVE {
     endwin;
