@@ -27,7 +27,7 @@ initscr() or die "Could not Initialize curses";
 start_color;
 cbreak;
 noecho;
-keypad($stdscr, 1);
+#keypad($stdscr, 1);
 
 # Initialize few color pairs
 init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -36,7 +36,7 @@ init_pair(1, COLOR_RED, COLOR_BLACK);
 my $fields = CArray[FIELD].new;
 $fields[0] = new_field(1, 10, 6, 1, 0, 0);
 $fields[1] = new_field(1, 10, 8, 1, 0, 0);
-$fields[2] = FIELD.new;
+$fields[2] = FIELD.new;  # NULL
 
 # Set field options
 set_field_back($fields[0], A_UNDERLINE);
@@ -69,11 +69,11 @@ print-in-middle($my_form_win, 1, 0, $cols + 4, "My Form", COLOR_PAIRS()[0]);
 post_form($my_form);
 wrefresh($my_form_win);
 
-mvprintw($LINES - 2, 0, "Use UP, DOWN arrow keys to switch between fields");
+mvprintw(LINES() - 2, 0, "Use UP, DOWN arrow keys to switch between fields");
 nc_refresh;
 
 # Loop through to get user requests
-while (my $ch = wgetch($my_form_win)) != KEY_F1 {
+while (my $ch = wgetch($my_form_win)) != 27 {
     given $ch {	
         when KEY_DOWN {
             # Go to next field

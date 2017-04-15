@@ -4,7 +4,7 @@ unit module NCurses;
 use LibraryCheck;
 use NativeCall;
 
-sub library {
+sub library is export {
     # Environment variable overrides auto-detection
     return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
 
@@ -32,18 +32,26 @@ our $acs_map  is export = cglobal(&library, 'acs_map',  CArray[int64]);
 our $COLORS   is export = cglobal(&library, 'COLORS',   int32);
 our $COLS     is export = cglobal(&library, 'COLS',     int32);
 our $ESCDELAY is export = cglobal(&library, 'ESCDELAY', int32);
-our $LINES    is export = cglobal(&library, 'LINES',    int32);
 our $TABSIZE  is export = cglobal(&library, 'TABSIZE',  int32);
 
 # Special case: COLOR_PAIRS global variable
-# Workaround since you need late binding of COLOR_PAIRS after initscr is called
-# for the first time
+# To be able to be called after initscr is called
 my $COLOR_PAIRS;
 sub COLOR_PAIRS is export {
     unless $COLOR_PAIRS {
         $COLOR_PAIRS = cglobal(&library, 'COLOR_PAIRS', int32);
     }
     return $COLOR_PAIRS;
+}
+
+# Special case: LINES global variable
+# To be able to be called after initscr is called
+my $LINES;
+sub LINES is export {
+    unless $LINES {
+        $LINES = cglobal(&library, 'LINES', int32);
+    }
+    return $LINES;
 }
 
 class MEVENT is repr('CStruct') is export {
@@ -975,6 +983,63 @@ sub top_panel(PANEL) is native(&panel-library) is export {*};
 sub set_panel_userptr(PANEL, Pointer) is native(&panel-library) is export {*};
 
 sub panel_userptr(PANEL) returns Pointer is native(&panel-library) is export {*};
+
+#
+# Menu library API
+#
+sub menu-library {
+    # Environment variable overrides auto-detection
+    return %*ENV<PERL6_NCURSES_MENU_LIB> if %*ENV<PERL6_NCURSES_MENU_LIB>;
+
+    # On MacOS X using howbrew
+    return "libmenu.dylib" if $*KERNEL.name eq 'darwin';
+
+    # Linux/UNIX
+    constant LIB = 'menu';
+    if library-exists(LIB, v5) {
+        return sprintf("lib%s.so.5", LIB);
+    } elsif library-exists(LIB, v6) {
+        return sprintf("lib%s.so.6", LIB);
+    }
+
+    # Fallback
+    return sprintf("lib%s.so", LIB);
+}
+
+class MENU is export is repr('CPointer') { }
+class ITEM is export is repr('CPointer') { }
+
+# Menu constants
+constant REQ_LEFT_ITEM is export     = KEY_MAX + 1;
+constant REQ_RIGHT_ITEM is export    = KEY_MAX + 2;
+constant REQ_UP_ITEM is export       = KEY_MAX + 3;
+constant REQ_DOWN_ITEM is export     = KEY_MAX + 4;
+constant REQ_SCR_ULINE is export     = KEY_MAX + 5;
+constant REQ_SCR_DLINE is export     = KEY_MAX + 6;
+constant REQ_SCR_DPAGE is export     = KEY_MAX + 7;
+constant REQ_SCR_UPAGE is export     = KEY_MAX + 8;
+constant REQ_FIRST_ITEM is export    = KEY_MAX + 9;
+constant REQ_LAST_ITEM is export     = KEY_MAX + 10;
+constant REQ_NEXT_ITEM is export     = KEY_MAX + 11;
+constant REQ_PREV_ITEM is export     = KEY_MAX + 12;
+constant REQ_TOGGLE_ITEM is export   = KEY_MAX + 13;
+constant REQ_CLEAR_PATTERN is export = KEY_MAX + 14;
+constant REQ_BACK_PATTERN is export  = KEY_MAX + 15;
+constant REQ_NEXT_MATCH is export    = KEY_MAX + 16;
+constant REQ_PREV_MATCH is export    = KEY_MAX + 17;
+
+constant MIN_MENU_COMMAND is export  = KEY_MAX + 1;
+constant MAX_MENU_COMMAND is export  = KEY_MAX + 17;
+
+#
+# Menu library subroutines
+#
+sub new_menu(CArray[ITEM])   returns MENU  is native(&menu-library) is export {*}
+sub free_menu(MENU)          returns int32 is native(&menu-library) is export {*}
+sub menu_driver(MENU, int32) returns int32 is native(&menu-library) is export {*}
+sub post_menu(MENU)          returns int32 is native(&menu-library) is export {*}
+sub new_item(CArray[uint8], CArray[uint8]) returns ITEM is native(&menu-library) is export {*}
+sub free_item(ITEM)          returns int32 is native(&menu-library) is export {*}
 
 #
 # Form library API
