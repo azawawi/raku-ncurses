@@ -48,8 +48,12 @@ $ zef install NCurses
 
 ## Environment variables
 
-`PERL6_NCURSES_LIB` can now be used to specify the location of the `ncurses`
-library in the system.
+The following environment variables can be used to specify the location of the
+different `ncurses` libraries:
+- `PERL6_NCURSES_LIB`
+- `PERL6_NCURSES_PANEL_LIB`
+- `PERL6_NCURSES_MENU_LIB`
+- `PERL6_NCURSES_FORM_LIB`
 
 ## Testing
 
