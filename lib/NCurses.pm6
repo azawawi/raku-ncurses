@@ -1034,6 +1034,17 @@ constant REQ_PREV_MATCH is export    = KEY_MAX + 17;
 constant MIN_MENU_COMMAND is export  = KEY_MAX + 1;
 constant MAX_MENU_COMMAND is export  = KEY_MAX + 17;
 
+# Menu options
+constant O_ONEVALUE   is export = 0x01;
+constant O_SHOWDESC   is export = 0x02;
+constant O_ROWMAJOR   is export = 0x04;
+constant O_IGNORECASE is export = 0x08;
+constant O_SHOWMATCH  is export = 0x10;
+constant O_NONCYCLIC  is export = 0x20;
+
+# Item options
+constant O_SELECTABLE is export = 0x01;
+
 #
 # Menu library subroutines
 #
@@ -1045,6 +1056,7 @@ sub unpost_menu(MENU)           returns int32 is native(&menu-library) is export
 sub set_menu_mark(MENU, Str)    returns int32 is native(&menu-library) is export {*}
 sub set_menu_win(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
 sub set_menu_sub(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
+sub menu_opts_off(MENU, int32)  returns int32 is native(&menu-library) is export {*}
 sub set_menu_format(MENU, int32, int32)  returns int32 is native(&menu-library) is export {*}
 
 sub new_item(CArray[uint8], CArray[uint8]) returns ITEM is native(&menu-library) is export {*}
