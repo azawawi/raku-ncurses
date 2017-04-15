@@ -1060,6 +1060,20 @@ sub menu_opts_off(MENU, int32)           returns int32        is native(&menu-li
 sub item_count(MENU)                     returns int32        is native(&menu-library) is export {*}
 sub menu_items(MENU)                     returns CArray[ITEM] is native(&menu-library) is export {*}
 sub set_menu_format(MENU, int32, int32)  returns int32        is native(&menu-library) is export {*}
+sub set_menu_fore(MENU, int32)           returns int32 is native(&menu-library) is export {*}
+sub menu_fore(MENU)                      returns int32 is native(&menu-library) is export {*}
+sub set_menu_back(MENU, int32)           returns int32 is native(&menu-library) is export {*}
+sub menu_back(MENU)                      returns int32 is native(&menu-library) is export {*}
+sub set_menu_grey(MENU, int32)           returns int32 is native(&menu-library) is export {*}
+sub menu_grey(MENU)                      returns int32 is native(&menu-library) is export {*}
+sub set_menu_pad(MENU, int32)            returns int32 is native(&menu-library) is export {*}
+sub menu_pad(MENU)                       returns int32 is native(&menu-library) is export {*}
+sub pos_menu_cursor(MENU)                returns int32 is native(&menu-library) is export {*}
+sub set_current_item(MENU, ITEM)         returns int32 is native(&menu-library) is export {*}
+sub current_item(MENU)                   returns ITEM  is native(&menu-library) is export {*}
+sub set_top_row(MENU, int32)             returns int32 is native(&menu-library) is export {*}
+sub top_row(MENU)                        returns int32 is native(&menu-library) is export {*}
+sub item_index(MENU)                     returns int32 is native(&menu-library) is export {*}
 
 sub new_item(CArray[uint8], CArray[uint8]) returns ITEM  is native(&menu-library) is export {*}
 sub free_item(ITEM)                        returns int32 is native(&menu-library) is export {*}
@@ -1067,6 +1081,10 @@ sub item_name(ITEM)                        returns Str   is native(&menu-library
 sub item_description(ITEM)                 returns Str   is native(&menu-library) is export {*}
 sub set_item_value(ITEM, Bool)             returns int32 is native(&menu-library) is export {*}
 sub item_value(ITEM)                       returns Bool  is native(&menu-library) is export {*}
+sub set_item_opts(ITEM, int32)             returns int32 is native(&menu-library) is export {*}
+sub item_opts_on(ITEM, int32)              returns int32 is native(&menu-library) is export {*}
+sub item_opts_off(ITEM, int32)             returns int32 is native(&menu-library) is export {*}
+sub item_opts(ITEM)                        returns int32 is native(&menu-library) is export {*}
 
 #
 # Form library API
