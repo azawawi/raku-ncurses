@@ -68,6 +68,9 @@ class MEVENT is repr('CStruct') is export {
 constant ERR is export = -1;
 constant OK  is export  = 0;
 
+constant TRUE  is export = 1;
+constant FALSE is export = 0;
+
 constant COLOR_BLACK is export = 0;
 constant COLOR_RED is export = 1;
 constant COLOR_GREEN is export = 2;
@@ -1034,10 +1037,15 @@ constant MAX_MENU_COMMAND is export  = KEY_MAX + 17;
 #
 # Menu library subroutines
 #
-sub new_menu(CArray[ITEM])   returns MENU  is native(&menu-library) is export {*}
-sub free_menu(MENU)          returns int32 is native(&menu-library) is export {*}
-sub menu_driver(MENU, int32) returns int32 is native(&menu-library) is export {*}
-sub post_menu(MENU)          returns int32 is native(&menu-library) is export {*}
+sub new_menu(CArray[ITEM])      returns MENU  is native(&menu-library) is export {*}
+sub free_menu(MENU)             returns int32 is native(&menu-library) is export {*}
+sub menu_driver(MENU, int32)    returns int32 is native(&menu-library) is export {*}
+sub post_menu(MENU)             returns int32 is native(&menu-library) is export {*}
+sub unpost_menu(MENU)           returns int32 is native(&menu-library) is export {*}
+sub set_menu_mark(MENU, Str)    returns int32 is native(&menu-library) is export {*}
+sub set_menu_win(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
+sub set_menu_sub(MENU, WINDOW)  returns int32 is native(&menu-library) is export {*}
+
 sub new_item(CArray[uint8], CArray[uint8]) returns ITEM is native(&menu-library) is export {*}
 sub free_item(ITEM)          returns int32 is native(&menu-library) is export {*}
 
