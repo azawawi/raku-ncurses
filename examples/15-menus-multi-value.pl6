@@ -49,20 +49,22 @@ while (my $c = wgetch($win)) != 27 {
     given $c {
         when KEY_DOWN { menu_driver($my-menu, REQ_DOWN_ITEM);   }
         when KEY_UP   { menu_driver($my-menu, REQ_UP_ITEM);     }
-        when ' '      { menu_driver($my-menu, REQ_TOGGLE_ITEM); }
+        when 32       {
+            # Space
+            menu_driver($my-menu, REQ_TOGGLE_ITEM);
+        }
         when 10	{
             # Enter
             my $items = menu_items($my-menu);
-            my $temp = '';
+            my @selected;
             for 0..item_count($my-menu) - 1 -> $i {
                  if item_value($items[$i]) == TRUE {
-                     $temp ~= item_name($items[$i]) + " ";
+                     @selected.push(item_name($items[$i]));
                  }
             }
             move(20, 0);
             clrtoeol;
-            mvprintw(20, 0, $temp);
-            say $temp;
+            mvprintw(20, 0, sprintf("Choices: %s", @selected.join(',')));
             nc_refresh;
         }
 	}
