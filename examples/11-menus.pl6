@@ -17,7 +17,7 @@ my @choices = [
 my $win = initscr() or die "Could not Initialize curses";
 cbreak;
 noecho;
-keypad($win, 1);
+keypad($win, TRUE);
 
 my $n-choices = @choices.elems;
 my $my-items  = CArray[ITEM].new;

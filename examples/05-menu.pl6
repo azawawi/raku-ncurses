@@ -49,7 +49,7 @@ my $startx = Int((80 - WIDTH) / 2);
 my $starty = Int((24 - HEIGHT) / 2);
 
 my $menu_win = newwin(HEIGHT, WIDTH, $starty, $startx);
-keypad($menu_win, 1);
+keypad($menu_win, TRUE);
 mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
 nc_refresh;
 print_menu($menu_win, $highlight);

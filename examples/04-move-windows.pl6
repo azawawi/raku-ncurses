@@ -27,7 +27,7 @@ die "Failed to initialize ncurses\n" unless $main-win;
 # Switch of echoing and enable keypad (for arrow keys)
 
 noecho;
-keypad($main-win, 1);
+keypad($main-win, TRUE);
 
 # Make our child window, and add a border and some text to it.
 my $child-win = subwin($main-win, $height, $width, $y, $x);

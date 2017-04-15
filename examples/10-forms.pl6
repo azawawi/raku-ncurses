@@ -23,11 +23,11 @@ sub print-in-middle($win, $starty, $startx, $width, Str $string, $color) {
 }
 
 # Initialize curses
-initscr() or die "Could not Initialize curses";
+my $win = initscr() or die "Could not Initialize curses";
 start_color;
 cbreak;
 noecho;
-#keypad($stdscr, 1);
+keypad($win, TRUE);
 
 # Initialize few color pairs
 init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -56,7 +56,7 @@ scale_form($my_form, $rows, $cols);
 
 # Create the window to be associated with the form
 my $my_form_win = newwin($rows + 4, $cols + 4, 4, 4);
-keypad($my_form_win, 1);
+keypad($my_form_win, TRUE);
 
 # Set main window and sub window
 set_form_win($my_form, $my_form_win);

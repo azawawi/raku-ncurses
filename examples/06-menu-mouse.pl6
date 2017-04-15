@@ -60,7 +60,7 @@ noecho;
 # Line buffering disabled. pass on everything
 cbreak;
 
-keypad($main-win, 1);
+keypad($main-win, TRUE);
 
 attron(A_REVERSE);
 mvprintw(23, 1, "Click on Exit to quit (Works best in a virtual console)");

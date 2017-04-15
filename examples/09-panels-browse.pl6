@@ -66,11 +66,11 @@ sub print_in_middle($win, $starty, $startx, $width, Str $string, $color) {
 my $top;
 
 # Initialize curses
-initscr() or die "Cannot initialize curses window";
+my $win = initscr() or die "Cannot initialize curses window";
 start_color;
 cbreak;
 noecho;
-keypad($stdscr, 1);
+keypad($win, TRUE);
 
 # Initialize all the colors
 init_pair(1, COLOR_RED, COLOR_BLACK);
