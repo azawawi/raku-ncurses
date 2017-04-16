@@ -1,5 +1,10 @@
 #!/usr/bin/env perl6
 
+#
+# Example translated and modified from C source
+# http://www.tldp.org/HOWTO/html_single/NCURSES-Programming-HOWTO/
+#
+
 use v6;
 
 use lib 'lib';
