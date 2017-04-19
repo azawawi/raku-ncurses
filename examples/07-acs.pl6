@@ -14,7 +14,7 @@ initscr() or die "Could not initialize curses window";
 
 sub print-acs($text, $acs-char) {
     printw($text);
-    addch($acs_map[$acs-char.ord]);
+    addch(acs_map[$acs-char.ord]);
     printw("\n");
 }
 

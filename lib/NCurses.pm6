@@ -27,12 +27,53 @@ class WINDOW is export is repr('CPointer') { }
 class SCREEN is export is repr('CPointer') { }
 
 # Global variables
-our $stdscr   is export = cglobal(&library, 'stdscr',   WINDOW);
-our $acs_map  is export = cglobal(&library, 'acs_map',  CArray[int64]);
-our $COLORS   is export = cglobal(&library, 'COLORS',   int32);
-our $COLS     is export = cglobal(&library, 'COLS',     int32);
-our $ESCDELAY is export = cglobal(&library, 'ESCDELAY', int32);
-our $TABSIZE  is export = cglobal(&library, 'TABSIZE',  int32);
+my $stdscr;
+sub stdscr is export {
+    unless $stdscr {
+        $stdscr = cglobal(&library, 'stdscr',   WINDOW);
+    }
+    return $stdscr;
+}
+
+my $acs_map;
+sub acs_map is export {
+    unless $acs_map {
+        $acs_map = cglobal(&library, 'acs_map',  CArray[int64]);
+    }
+    return $acs_map;
+}
+
+my $COLORS;
+sub COLORS is export {
+    unless $COLORS {
+        $COLORS = cglobal(&library, 'COLORS',   int32);
+    }
+    return $COLORS;
+}
+
+my $COLS;
+sub COLS is export {
+    unless $COLS {
+        $COLS = cglobal(&library, 'COLS',     int32);
+    }
+    return $COLS;
+}
+
+my $ESCDELAY;
+sub ESCDELAY is export {
+    unless $ESCDELAY {
+        $ESCDELAY = cglobal(&library, 'ESCDELAY', int32);
+    }
+    return $ESCDELAY;
+}
+
+my $TABSIZE;
+sub TABSIZE is export {
+    unless $TABSIZE {
+        $TABSIZE = cglobal(&library, 'TABSIZE',  int32);
+    }
+    return $TABSIZE;
+}
 
 # Special case: COLOR_PAIRS global variable
 # To be able to be called after initscr is called

@@ -80,9 +80,9 @@ set_menu_mark($my-menu, " * ");
 #  Print a border around the main window and print a title 
 box($my-menu-win, 0, 0);
 print_in_middle($my-menu-win, 1, 0, 40, "My Menu", COLOR_PAIR[0]);
-mvwaddch($my-menu-win, 2, 0, $acs_map[ACS_LTEE.ord]);
-mvwhline($my-menu-win, 2, 1, $acs_map[ACS_HLINE.ord], 38);
-mvwaddch($my-menu-win, 2, 39, $acs_map[ACS_RTEE.ord]);
+mvwaddch($my-menu-win, 2, 0, acs_map[ACS_LTEE.ord]);
+mvwhline($my-menu-win, 2, 1, acs_map[ACS_HLINE.ord], 38);
+mvwaddch($my-menu-win, 2, 39, acs_map[ACS_RTEE.ord]);
     
 #  Post the menu 
 post_menu($my-menu);
