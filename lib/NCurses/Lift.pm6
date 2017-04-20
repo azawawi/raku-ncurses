@@ -30,6 +30,25 @@ method get-char {
     return getch;
 }
 
+method max-yx {
+    my $x;
+    my $y;
+    getmaxyx($!win, $y, $x);
+    return ($y, $x);
+}
+
+method cursor(Int $visibility) {
+    curs_set($visibility);
+}
+
+method timeout(Int $duration) {
+    timeout($duration);
+}
+
+method clear {
+    clear;
+}
+
 method cleanup {
     # No need to cleanup if undefined
     return unless $!win;
