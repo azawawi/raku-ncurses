@@ -69,7 +69,7 @@ class RandomCircle {
     }
 }
 
-my $max-circles = 10;
+my $max-circles = 25;
 
 my @circles;
 for 1..$max-circles {
