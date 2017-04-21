@@ -64,6 +64,11 @@ different `ncurses` libraries:
 - `PERL6_NCURSES_MENU_LIB`
 - `PERL6_NCURSES_FORM_LIB`
 
+## Troubleshooting
+
+- To fix a broken or messed up terminal after a crash, please type `reset` to
+reset your terminal into its original state.
+
 ## Testing
 
 - To run tests:
