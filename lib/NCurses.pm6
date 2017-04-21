@@ -54,7 +54,7 @@ sub COLORS is export {
 my $COLS;
 sub COLS is export {
     unless $COLS {
-        $COLS = cglobal(&library, 'COLS',     int32);
+        $COLS := cglobal(&library, 'COLS',     int32);
     }
     return $COLS;
 }
@@ -90,7 +90,7 @@ sub COLOR_PAIRS is export {
 my $LINES;
 sub LINES is export {
     unless $LINES {
-        $LINES = cglobal(&library, 'LINES', int32);
+        $LINES := cglobal(&library, 'LINES', int32);
     }
     return $LINES;
 }

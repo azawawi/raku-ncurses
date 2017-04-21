@@ -65,7 +65,19 @@ for 1..$max-circles {
 }
 
 timeout(0);
-repeat {
+keypad($stdscr,TRUE);
+
+while (my $ch = getch()) != 27 {
+    given $ch {
+        when KEY_RESIZE {
+            $max-x = getmaxx($stdscr);
+            $max-y = getmaxy($stdscr);
+            for @circles -> $circle {
+                $circle.reroll;
+            }
+        }
+    }
+
     clear;
     for @circles -> $circle {
         $circle.draw;
@@ -73,8 +85,8 @@ repeat {
     }
     mvprintw(LINES() - 2, 0, "Enjoy the show. Press ESC to exit");
     nc_refresh;
-    sleep 0.5;
-} while getch() != 27;
+    sleep 0.05;
+};
 
 # Cleanup
 LEAVE {
