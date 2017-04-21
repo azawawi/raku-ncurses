@@ -10,8 +10,7 @@ use lib 'lib';
 use NCurses;
 
 
-my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win;
+my $win = initscr() or die "Failed to initialize ncurses\n";
 
 constant numstars  = 100;
 my $screen-x  =  getmaxx($win);

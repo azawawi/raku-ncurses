@@ -5,8 +5,7 @@ use lib 'lib';
 use NCurses;
 
 # Start curses mode
-my $win = initscr;
-die "Failed to initialize ncurses\n" unless $win;
+my $win = initscr() or die "Failed to initialize ncurses\n";
 
 # Print Hello World
 printw( "Hello World" );
