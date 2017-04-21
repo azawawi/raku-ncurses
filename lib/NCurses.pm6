@@ -146,6 +146,7 @@ constant A_LOW is export = 134217728;
 constant A_RIGHT is export = 268435456;
 constant A_TOP is export = 536870912;
 constant A_VERTICAL is export = 1073741824;
+constant A_ITALIC is export = 2147483648;
 constant KEY_CODE_YES is export = 256;
 constant KEY_MIN is export = 257;
 constant KEY_BREAK is export = 257;
