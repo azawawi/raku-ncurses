@@ -3,6 +3,7 @@
     "authors"       : [ "Ahmad M. Zawawi" ],
     "description"   : "Perl 6 interface to NCurses, the text-based interface library",
     "name"          : "NCurses",
+    "license"       : "MIT",
     "perl"          : "6.c",
     "provides"      : {
         "NCurses"	  : "lib/NCurses.pm6"
