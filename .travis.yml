@@ -5,19 +5,13 @@ os:
   - osx
 
 perl6:
-  - 2017.03
+  - 2017.08
   - latest
 
 before_install:
+    # Display travis OS name
   - echo $TRAVIS_OS_NAME
 
-install:
-  - rakudobrew build zef
-  - zef --depsonly install .
-  - zef install Test::META
-  - zef build .
-
-before_script:
   # Debian-based ncurses installation
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -qq update             ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libncurses5 ; fi
@@ -26,6 +20,12 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update          ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install ncurses ; fi
 
+install:
+  - rakudobrew build zef
+  - zef --depsonly install .
+  - zef install Test::META
+  - zef build .
+      
 script:
     - AUTHOR_TESTING=1 prove -ve "perl6 -Ilib"
     - zef install .
