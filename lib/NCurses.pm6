@@ -12,15 +12,16 @@ sub library is export {
     return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
 
     # Linux/UNIX
-    constant LIB = 'ncurses';
-    if library-exists(LIB, v5) {
-        return sprintf("lib%s.so.5", LIB);
-    } elsif library-exists(LIB, v6) {
-        return sprintf("lib%s.so.6", LIB);
+    for 'ncurses', 'ncursesw' -> $lib {
+        if library-exists($lib, v5) {
+            return sprintf("lib%s.so.5", $lib);
+        } elsif library-exists($lib, v6) {
+            return sprintf("lib%s.so.6", $lib);
+        }
     }
 
     # Fallback
-    return sprintf("lib%s.so", LIB);
+    return "libncurses.so";
 }
 
 class WINDOW is export is repr('CPointer') { }
