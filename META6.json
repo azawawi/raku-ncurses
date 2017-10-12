@@ -6,7 +6,8 @@
     "license"       : "MIT",
     "perl"          : "6.c",
     "provides"      : {
-        "NCurses"	  : "lib/NCurses.pm6"
+        "NCurses"       : "lib/NCurses.pm6",
+        "NCurses::Lift" : "lib/NCurses/Lift.pm6"
     },
     "repo-type"     : "git",
     "source-url"    : "git://github.com/azawawi/perl6-ncurses.git",
@@ -19,5 +20,5 @@
         "LibraryCheck",
         "Test"
     ],
-    "version"       : "0.6.2"
+    "version"       : "0.6.3"
 }
