@@ -2,7 +2,6 @@
 
 use v6;
 
-use lib 'lib';
 use NCurses;
 
 # Start curses mode

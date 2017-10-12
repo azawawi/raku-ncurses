@@ -7,7 +7,6 @@
 
 use v6;
 
-use lib 'lib';
 use NCurses;
 
 constant WIDTH  = 30;

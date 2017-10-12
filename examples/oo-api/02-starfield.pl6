@@ -6,7 +6,6 @@
 #
 use v6;
 
-use lib 'lib';
 use NCurses::Lift;
 
 my $o = NCurses::Lift.new;

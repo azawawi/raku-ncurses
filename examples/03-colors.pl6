@@ -9,7 +9,6 @@
 
 use v6;
 
-use lib 'lib';
 use NCurses;
 
 # Initialize an NCurses window

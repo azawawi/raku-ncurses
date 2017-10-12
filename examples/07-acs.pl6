@@ -7,7 +7,6 @@
 
 use v6;
 
-use lib 'lib';
 use NCurses;
 
 initscr() or die "Could not initialize curses window";
