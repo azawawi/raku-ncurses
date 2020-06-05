@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
 #
 # Example translated and modified from C source
@@ -31,23 +31,20 @@ my @choices = [
     "Choice 2",
     "Choice 3",
     "Choice 4",
-    "Choice 5",
-    "Choice 6",
-    "Choice 7",
-    "Choice 8",
-    "Choice 9",
-    "Choice 10",
     "Exit",
 ];
 
-#  Initialize curses 
+
+
+# Initialize curses
 my $win = initscr() or die "Could not initialize curses";
 start_color;
 cbreak;
 noecho;
 keypad($win, TRUE);
+
+# Initialize colors
 init_pair(1, COLOR_RED, COLOR_BLACK);
-init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
 # Create items
 my $n-choices = @choices.elems;
@@ -61,18 +58,17 @@ for 0..$n-choices - 1 -> $i {
 }
 $my-items[$n-choices] = ITEM.new;  # NULL
 
-#  Create menu 
+# Crate menu
 my $my-menu = new_menu($my-items);
 
-#  Create the window to be associated with the menu 
+# Create the window to be associated with the menu
 my $my-menu-win = newwin(10, 40, 4, 4);
 keypad($my-menu-win, TRUE);
  
 #  Set main window and sub window 
 set_menu_win($my-menu, $my-menu-win);
 set_menu_sub($my-menu, derwin($my-menu-win, 6, 38, 3, 1));
-set_menu_format($my-menu, 5, 1);
-		
+
 #  Set menu mark to the string " * " 
 set_menu_mark($my-menu, " * ");
 
@@ -82,16 +78,12 @@ print_in_middle($my-menu-win, 1, 0, 40, "My Menu", COLOR_PAIR[0]);
 mvwaddch($my-menu-win, 2, 0, acs_map[ACS_LTEE.ord]);
 mvwhline($my-menu-win, 2, 1, acs_map[ACS_HLINE.ord], 38);
 mvwaddch($my-menu-win, 2, 39, acs_map[ACS_RTEE.ord]);
+mvprintw(LINES() - 2, 0, "ESC to exit");
+nc_refresh;
     
 #  Post the menu 
 post_menu($my-menu);
 wrefresh($my-menu-win);
-
-attron(COLOR_PAIR[1]);
-mvprintw(LINES() - 2, 0, "Use PageUp and PageDown to scoll down or up a page of items");
-mvprintw(LINES() - 1, 0, "Arrow Keys to navigate (ESC to Exit)");
-attroff(COLOR_PAIR[1]);
-nc_refresh;
 
 while (my $c = wgetch($win)) != 27 {
     given $c {
@@ -101,15 +93,10 @@ while (my $c = wgetch($win)) != 27 {
         when KEY_UP {
             menu_driver($my-menu, REQ_UP_ITEM);
         }
-        when KEY_NPAGE {
-            menu_driver($my-menu, REQ_SCR_DPAGE);
-        }
-        when KEY_PPAGE {
-            menu_driver($my-menu, REQ_SCR_UPAGE);
-        }
     }
     wrefresh($my-menu-win);
-}	
+}
+
 
 LEAVE {
     #  Unpost and free all the memory taken up 

@@ -1,11 +1,11 @@
 # NCurses [![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
 
-NCurses provides a Perl 6 native interface to `ncurses` library.
+NCurses provides a Raku native interface to the `ncurses` library for
+terminal-independent screen I/O.
 
 ## Example
 
-```Perl6
-use v6;
+```raku
 use NCurses;
 
 # Initialize curses window
@@ -59,10 +59,10 @@ $ zef install NCurses
 
 The following environment variables can be used to specify the location of the
 different `ncurses` libraries:
-- `PERL6_NCURSES_LIB`
-- `PERL6_NCURSES_PANEL_LIB`
-- `PERL6_NCURSES_MENU_LIB`
-- `PERL6_NCURSES_FORM_LIB`
+- `RAKU_NCURSES_LIB`
+- `RAKU_NCURSES_PANEL_LIB`
+- `RAKU_NCURSES_MENU_LIB`
+- `RAKU_NCURSES_FORM_LIB`
 
 ## Troubleshooting
 
@@ -73,19 +73,19 @@ reset your terminal into its original state.
 
 - To run tests:
 ```
-$ prove -ve "perl6 -Ilib"
+$ prove -ve "raku -Ilib"
 ```
 
 - To run all tests including author tests (Please make sure
 [Test::Meta](https://github.com/jonathanstowe/Test-META) is installed):
 ```
 $ zef install Test::META
-$ AUTHOR_TESTING=1 prove -e "perl6 -Ilib"
+$ AUTHOR_TESTING=1 prove -e "raku -Ilib"
 ```
 
 ## Author
 
-Ahmad M. Zawawi, azawawi on #perl6, https://github.com/azawawi/
+Ahmad M. Zawawi, azawawi on #raku, https://github.com/azawawi/
 
 ## License
 

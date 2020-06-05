@@ -1,19 +1,17 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
 #
-# Example from
+# Modified OO-based API. The original example is found here:
 # http://software.gellyfish.co.uk/2015/10/learning-perl-6-from-bad-perl-5-code.html
 #
 use v6;
 
-use NCurses;
+use NCurses::Lift;
 
-
-my $win = initscr() or die "Failed to initialize ncurses\n";
+my $o = NCurses::Lift.new;
 
 constant numstars  = 100;
-my $screen-x  =  getmaxx($win);
-my $screen-y  =  getmaxy($win);
+my ($screen-y, $screen-x)  = $o.max-yx;
 
 constant max-speed =   4;
 
@@ -37,22 +35,19 @@ class Star {
 
 my Star @stars = gather { take Star.new for ^numstars };
 
-curs_set( 0 );
-timeout( 0 );
+$o.cursor( 0 );
+$o.timeout( 0 );
 repeat {
-    clear;
+    $o.clear;
     for @stars -> $star {
         $star.move;
-        mvaddstr( $star.y, $star.x, '.' )
+        $o.printf( $star.y, $star.x, '.' );
     }
-    nc_refresh;
+    $o.refresh;
     sleep( .05 );
-} while getch() < 0;
+} while $o.get-char < 0;
 
 # Cleanup
 LEAVE {
-    delwin($win)  if $win;
-
-    # End curses mode
-    endwin;
+    $o.cleanup if $o;
 }

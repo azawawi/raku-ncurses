@@ -1,4 +1,4 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
 #
 # Example translated and modified from C source
@@ -23,10 +23,17 @@ my @choices = [
 
 # Initialize curses
 my $win = initscr() or die "Could not initialize curses";
+start_color;
 cbreak;
 noecho;
 keypad($win, TRUE);
 
+# Initialize colors
+init_pair(1, COLOR_RED, COLOR_BLACK);
+init_pair(2, COLOR_GREEN, COLOR_BLACK);
+init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
+
+# Initialize items
 # Create items
 my $n-choices = @choices.elems;
 my $my-items  = CArray[ITEM].new;
@@ -39,13 +46,20 @@ for 0..$n-choices - 1 -> $i {
 }
 $my-items[$n-choices] = ITEM.new;  # NULL
 
+item_opts_off($my-items[3], O_SELECTABLE);
+item_opts_off($my-items[6], O_SELECTABLE);
+
+# Create menu
 my $my-menu = new_menu($my-items);
 
-# Make the menu multi valued
-menu_opts_off($my-menu, O_ONEVALUE);
+#  Set fore ground and back ground of the menu
+set_menu_fore($my-menu, COLOR_PAIR[0] +| A_REVERSE);
+set_menu_back($my-menu, COLOR_PAIR[1]);
+set_menu_grey($my-menu, COLOR_PAIR[2]);
 
-mvprintw(LINES() - 3, 0, "Use <SPACE> to select or unselect an item.");
-mvprintw(LINES() - 2, 0, "<ENTER> to see presently selected items(ESC to Exit)");
+# Post the menu
+mvprintw(LINES() - 3, 0, "Press <ENTER> to see the option selected");
+mvprintw(LINES() - 2, 0, "Up and Down arrow keys to naviage (ESC to Exit)");
 post_menu($my-menu);
 nc_refresh;
 
@@ -53,23 +67,12 @@ while (my $c = wgetch($win)) != 27 {
     given $c {
         when KEY_DOWN { menu_driver($my-menu, REQ_DOWN_ITEM);   }
         when KEY_UP   { menu_driver($my-menu, REQ_UP_ITEM);     }
-        when 32       {
-            # Space
-            menu_driver($my-menu, REQ_TOGGLE_ITEM);
-        }
-        when 10	{
+        when 10 {
             # Enter
-            my $items = menu_items($my-menu);
-            my @selected;
-            for 0..item_count($my-menu) - 1 -> $i {
-                 if item_value($items[$i]) == TRUE {
-                     @selected.push(item_name($items[$i]));
-                 }
-            }
             move(20, 0);
             clrtoeol;
-            mvprintw(20, 0, sprintf("Choices: %s", @selected.join(',')));
-            nc_refresh;
+            mvprintw(20, 0, sprintf("Item selected is : %s", item_name(current_item($my-menu))));
+            pos_menu_cursor($my-menu);
         }
 	}
 }	
