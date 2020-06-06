@@ -384,6 +384,9 @@ constant ACS_SSSS is export = ACS_PLUS;
 
 constant COLOR_PAIR   is export = (COLOR_PAIR_1,COLOR_PAIR_2,COLOR_PAIR_3,COLOR_PAIR_4,COLOR_PAIR_5,COLOR_PAIR_6,COLOR_PAIR_7);
 
+# functions from Raku's process (libc, etc.)
+sub setlocale(int32, Str) returns Str is native is export {*};
+
 # functions from curses.h below
 
 sub addch(int32) returns int32 is native(&library) is export {*};
