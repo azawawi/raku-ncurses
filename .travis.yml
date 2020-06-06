@@ -1,31 +1,12 @@
-language: perl6
+# TODO: OS X & Windows
 
-os:
-  - linux
-  - osx
-
-perl6:
-  - 2017.08
-  - latest
-
-before_install:
-    # Display travis OS name
-  - echo $TRAVIS_OS_NAME
-
-  # Debian-based ncurses installation
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -qq update             ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libncurses5 ; fi
-
-  # macOS ncurses installation
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update          ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install ncurses ; fi
+services:
+  - docker
 
 install:
-  - rakudobrew build zef
-  - zef --depsonly install .
-  - zef install Test::META
-  - zef build .
-      
+  - docker pull jjmerelo/test-perl6
+  - docker images
+
 script:
-    - AUTHOR_TESTING=1 prove -ve "perl6 -Ilib"
-    - zef install .
+  - docker run -t -v $TRAVIS_BUILD_DIR:/test --entrypoint=/bin/sh jjmerelo/test-perl6
+    .travis/docker-entrypoint.sh
