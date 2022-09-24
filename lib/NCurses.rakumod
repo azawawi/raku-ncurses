@@ -6,7 +6,8 @@ use NativeCall;
 
 sub library is export {
     # Environment variable overrides auto-detection
-    return %*ENV<PERL6_NCURSES_LIB> if %*ENV<PERL6_NCURSES_LIB>;
+    if %*ENV<RAKU_NCURSES_LIB> // %*ENV<PERL6_NCURSES_LIB>
+        -> $lib { return $lib }
 
     # On MacOS X using howbrew
     return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
@@ -997,7 +998,8 @@ sub trace(int32) is native(&library) is export {*};
 #
 sub panel-library {
     # Environment variable overrides auto-detection
-    return %*ENV<PERL6_NCURSES_PANEL_LIB> if %*ENV<PERL6_NCURSES_PANEL_LIB>;
+    if %*ENV<RAKU_NCURSES_PANEL_LIB> // %*ENV<PERL6_NCURSES_PANEL_LIB>
+        -> $lib { return $lib }
 
     # On MacOS X using howbrew
     return "libpanel.dylib" if $*KERNEL.name eq 'darwin';
@@ -1035,7 +1037,8 @@ sub panel_userptr(PANEL) returns Pointer is native(&panel-library) is export {*}
 #
 sub menu-library {
     # Environment variable overrides auto-detection
-    return %*ENV<PERL6_NCURSES_MENU_LIB> if %*ENV<PERL6_NCURSES_MENU_LIB>;
+    if %*ENV<RAKU_NCURSES_MENU_LIB> // %*ENV<PERL6_NCURSES_MENU_LIB>
+        -> $lib { return $lib }
 
     # On MacOS X using howbrew
     return "libmenu.dylib" if $*KERNEL.name eq 'darwin';
@@ -1136,7 +1139,8 @@ sub item_userptr(ITEM)                     returns int32 is native(&menu-library
 #
 sub form-library {
     # Environment variable overrides auto-detection
-    return %*ENV<PERL6_NCURSES_FORM_LIB> if %*ENV<PERL6_NCURSES_FORM_LIB>;
+    if %*ENV<RAKU_NCURSES_FORM_LIB> // %*ENV<PERL6_NCURSES_FORM_LIB>
+        -> $lib { return $lib }
 
     # On MacOS X using howbrew
     return "libform.dylib" if $*KERNEL.name eq 'darwin';
