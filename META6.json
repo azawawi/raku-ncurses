@@ -1,6 +1,10 @@
 {
     "auth"          : "github:azawawi",
     "authors"       : [ "Ahmad M. Zawawi" ],
+    "depends"       : [
+        "LibraryCheck",
+        "NativeCall"
+    ],
     "description"   : "Raku interface to NCurses, the text-based interface library",
     "name"          : "NCurses",
     "license"       : "MIT",
@@ -18,8 +22,7 @@
         "NativeCall"
     ],
     "test-depends"  : [
-        "LibraryCheck",
         "Test"
     ],
-    "version"       : "0.6.4"
+    "version"       : "0.6.5"
 }

@@ -1,29 +1,64 @@
 use v6;
 unit module NCurses;
 
-use LibraryCheck;
 use NativeCall;
 
-sub library is export {
-    # Environment variable overrides auto-detection
-    if %*ENV<RAKU_NCURSES_LIB> // %*ENV<PERL6_NCURSES_LIB>
-        -> $lib { return $lib }
+# NB: Needs more testing on various platforms; please open an issue with
+# any portability concerns
+our sub library($lib = 'ncurses') {
+    state %library;
+    return %library{$lib} //= resolve-lib;
 
-    # On MacOS X using howbrew
-    return "libncurses.dylib" if $*KERNEL.name eq 'darwin';
+    sub resolve-lib() {
+        constant \NCURSES = 'ncurses';
 
-    # Linux/UNIX
-    for 'ncurses', 'ncursesw' -> $lib {
-        if library-exists($lib, v5) {
-            return sprintf("lib%s.so.5", $lib);
-        } elsif library-exists($lib, v6) {
-            return sprintf("lib%s.so.6", $lib);
+        my $is-curses = $lib eq NCURSES;
+
+        # Check RAKU_NCURSES_LIB, RAKU_NCURSES_{PANEL,MENU,FORM}_LIB
+        my @env = <RAKU PERL6>.map({
+            join '_', $_, 'NCURSES', ($lib.uc unless $is-curses), 'LIB'
+        });
+        if [//] %*ENV{@env} -> $val {
+            return $val
         }
-    }
 
-    # Fallback
-    return "libncurses.so";
+        return find-curses if $is-curses;
+
+        # We only want to use libpanelw.so.6 with libncursesw.so.6, so just
+        # return the matching name rather than doing a separate search
+        # (which could end up calling into mismatched libraries). It's
+        # better to error out due to a missing library than procede with a
+        # bad combination.
+        given library(NCURSES) {
+            when Str {
+                # Match the value provided in %*ENV<RAKU_NCURSES_LIB>
+                return .subst(:nth(*), NCURSES, $lib);
+            }
+            default {
+                my $w = is-widechar-lib(.head) ?? 'w' !! '';
+                return ($lib ~ $w, .tail)
+            }
+        }
+
+        sub find-curses() {
+            use LibraryCheck;
+            state $curses //= ((v6, v5) X <ncursesw ncurses curses>)
+                                    .map(*.reverse.cache)
+                                    .grep({ library-exists |$_ })
+                                    .head
+                                    // (NCURSES, Version);
+        }
+
+        sub is-widechar-lib($name) {
+            # $name might be 'ncursesw', '/lib64/libncursesw.so.6.1', etc.
+            $name.IO.basename.Str.split('.', 2).head.ends-with('w')
+        }
+    };
 }
+
+sub panel-library() { library('panel') }
+sub menu-library()  { library('menu')  }
+sub form-library()  { library('form')  }
 
 class WINDOW is export is repr('CPointer') { }
 class SCREEN is export is repr('CPointer') { }
@@ -348,6 +383,9 @@ constant ACS_SBSB is export = ACS_VLINE;
 constant ACS_SSSS is export = ACS_PLUS;
 
 constant COLOR_PAIR   is export = (COLOR_PAIR_1,COLOR_PAIR_2,COLOR_PAIR_3,COLOR_PAIR_4,COLOR_PAIR_5,COLOR_PAIR_6,COLOR_PAIR_7);
+
+# functions from Raku's process (libc, etc.)
+sub setlocale(int32, Str) returns Str is native is export {*};
 
 # functions from curses.h below
 
@@ -996,25 +1034,6 @@ sub trace(int32) is native(&library) is export {*};
 #
 # Panel library API
 #
-sub panel-library {
-    # Environment variable overrides auto-detection
-    if %*ENV<RAKU_NCURSES_PANEL_LIB> // %*ENV<PERL6_NCURSES_PANEL_LIB>
-        -> $lib { return $lib }
-
-    # On MacOS X using howbrew
-    return "libpanel.dylib" if $*KERNEL.name eq 'darwin';
-
-    # Linux/UNIX
-    constant LIB = 'panel';
-    if library-exists(LIB, v5) {
-        return sprintf("lib%s.so.5", LIB);
-    } elsif library-exists(LIB, v6) {
-        return sprintf("lib%s.so.6", LIB);
-    }
-
-    # Fallback
-    return sprintf("lib%s.so", LIB);
-}
 
 class PANEL is repr('CPointer') { }
 
@@ -1032,28 +1051,10 @@ sub set_panel_userptr(PANEL, Pointer) is native(&panel-library) is export {*};
 
 sub panel_userptr(PANEL) returns Pointer is native(&panel-library) is export {*};
 
+
 #
 # Menu library API
 #
-sub menu-library {
-    # Environment variable overrides auto-detection
-    if %*ENV<RAKU_NCURSES_MENU_LIB> // %*ENV<PERL6_NCURSES_MENU_LIB>
-        -> $lib { return $lib }
-
-    # On MacOS X using howbrew
-    return "libmenu.dylib" if $*KERNEL.name eq 'darwin';
-
-    # Linux/UNIX
-    constant LIB = 'menu';
-    if library-exists(LIB, v5) {
-        return sprintf("lib%s.so.5", LIB);
-    } elsif library-exists(LIB, v6) {
-        return sprintf("lib%s.so.6", LIB);
-    }
-
-    # Fallback
-    return sprintf("lib%s.so", LIB);
-}
 
 class MENU is export is repr('CPointer') { }
 class ITEM is export is repr('CPointer') { }
@@ -1134,28 +1135,10 @@ sub item_opts(ITEM)                        returns int32 is native(&menu-library
 sub set_item_userptr(ITEM, int32)             returns int32 is native(&menu-library) is export {*}
 sub item_userptr(ITEM)                     returns int32 is native(&menu-library) is export {*}
 
+
 #
 # Form library API
 #
-sub form-library {
-    # Environment variable overrides auto-detection
-    if %*ENV<RAKU_NCURSES_FORM_LIB> // %*ENV<PERL6_NCURSES_FORM_LIB>
-        -> $lib { return $lib }
-
-    # On MacOS X using howbrew
-    return "libform.dylib" if $*KERNEL.name eq 'darwin';
-
-    # Linux/UNIX
-    constant LIB = 'form';
-    if library-exists(LIB, v5) {
-        return sprintf("lib%s.so.5", LIB);
-    } elsif library-exists(LIB, v6) {
-        return sprintf("lib%s.so.6", LIB);
-    }
-
-    # Fallback
-    return sprintf("lib%s.so", LIB);
-}
 
 class FORM  is export is repr('CPointer') { }
 class FIELD is export is repr('CPointer') { }
