@@ -43,7 +43,7 @@ For more examples, please see the [examples](examples) folder.
 
 * On Debian-based linux distributions, please use the following command:
 ```
-$ sudo apt-get install libncurses5
+$ sudo apt-get install libncurses6
 ```
 
 * On Mac OS X, please use the following command:
