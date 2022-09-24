@@ -25,7 +25,19 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install --/test --test-depends --deps-only .
+        run: |
+          # Install imagemagick
+          if [ "$RUNNER_OS" == "Linux" ]; then
+              sudo apt-get install -y libncurses5
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+              brew update
+              brew install ncurses
+          else
+              echo "$RUNNER_OS not supported"
+              exit 1;
+          fi
+          # Install and test dependencies
+          zef install --/test --test-depends --deps-only .
       - name: Install App::Prove6
         run: zef install --/test App::Prove6
       - name: Run Tests
