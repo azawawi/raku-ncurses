@@ -1,4 +1,6 @@
-# NCurses [![Build Status](https://travis-ci.org/azawawi/perl6-ncurses.svg?branch=master)](https://travis-ci.org/azawawi/perl6-ncurses)
+# NCurses
+[![Actions
+Status](https://github.com/azawawi/raku-ncurses/workflows/test/badge.svg)](https://github.com/azawawi/raku-ncurses/actions)
 
 NCurses provides a Raku native interface to the `ncurses` library for
 terminal-independent screen I/O.

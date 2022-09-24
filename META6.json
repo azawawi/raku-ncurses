@@ -11,7 +11,7 @@
     },
     "raku"          : "6.c",
     "repo-type"     : "git",
-    "source-url"    : "git://github.com/azawawi/perl6-ncurses.git",
+    "source-url"    : "git://github.com/azawawi/raku-ncurses.git",
     "tags"          : [
         "CLI",
         "Terminal",
